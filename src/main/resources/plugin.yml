@@ -1,0 +1,10 @@
+name: bnsmpcore
+version: ${version}
+main: me.lyamray.bnsmpcore.BeneluxeSMPCore
+api-version: '1.21'
+load: STARTUP
+authors: [ LyamRay ]
+description: The core plugin from the Beneluxe-SMP.
+website: https://github.com/LyamRay
+depend: [FancyNpcs]
+
