@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractDatabaseLoader {
-    protected final Database database = Database.getInstance();
+
 
     public abstract String getTableName();
 
     protected abstract void handleRow(Map<String, Object> row) throws SQLException;
 
     public void load() throws SQLException {
-        List<Map<String, Object>> results = database.get(getTableName(), null);
+        List<Map<String, Object>> results = Database.getInstance().get(getTableName(), null);
         for (Map<String, Object> row : results) {
             try {
                 handleRow(row);

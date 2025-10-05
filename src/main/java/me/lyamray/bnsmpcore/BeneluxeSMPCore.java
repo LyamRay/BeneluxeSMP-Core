@@ -6,7 +6,6 @@ import me.lyamray.bnsmpcore.database.Database;
 import me.lyamray.bnsmpcore.utils.manager.RegisterListenerManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.stream.Stream;
 
 @Slf4j
 public final class BeneluxeSMPCore extends JavaPlugin {
@@ -29,5 +28,6 @@ public final class BeneluxeSMPCore extends JavaPlugin {
     @Override
     public void onDisable() {
         Database.getInstance().saveAllData();
+        Database.getInstance().shutdown();
     }
 }
