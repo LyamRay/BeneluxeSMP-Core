@@ -12,7 +12,6 @@ import java.util.List;
 @UtilityClass
 public class RegisterListenerManager {
 
-
     public void registerAll() {
         List<Class<? extends Listener>> listeners = List.of(
         );
