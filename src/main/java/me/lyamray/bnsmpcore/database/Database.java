@@ -54,14 +54,14 @@ public final class Database {
             this.connection = new Database(dbPath.toString()).connection;
             log.info("Connected successfully to the database!");
         } catch (IOException | SQLException e) {
-            fatalError("Failed to setup database", e, plugin);
+            fatalError(e, plugin);
         }
     }
 
-    private void fatalError(String message, Exception e, BeneluxeSMPCore plugin) {
-        log.error(message + ": " + e.getMessage(), e);
+    private void fatalError(Exception e, BeneluxeSMPCore plugin) {
+        log.error("{}: {}", "Failed to setup database", e.getMessage(), e);
         Bukkit.getPluginManager().disablePlugin(plugin);
-        throw new RuntimeException(message, e);
+        throw new RuntimeException("Failed to setup database", e);
     }
 
     private void initializeTables() throws SQLException {
@@ -209,7 +209,7 @@ public final class Database {
                 log.info("{} data loaded successfully.", loader.getTableName());
             } catch (Exception e) {
                 log.warn("Failed to load {} data: {}", loader.getTableName(), e.getMessage());
-                e.printStackTrace();
+                log.warn(String.valueOf(e));
             }
         }
     }
@@ -221,7 +221,7 @@ public final class Database {
                 log.info("{} data saved successfully.", saver.getTableName());
             } catch (Exception e) {
                 log.warn("Failed to save {} data: {}", saver.getTableName(), e.getMessage());
-                e.printStackTrace();
+                log.warn(String.valueOf(e));
             }
         }
     }

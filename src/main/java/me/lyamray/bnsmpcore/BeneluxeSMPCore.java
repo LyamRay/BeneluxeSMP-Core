@@ -6,7 +6,6 @@ import me.lyamray.bnsmpcore.database.Database;
 import me.lyamray.bnsmpcore.utils.manager.RegisterListenerManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-
 @Slf4j
 public final class BeneluxeSMPCore extends JavaPlugin {
 
