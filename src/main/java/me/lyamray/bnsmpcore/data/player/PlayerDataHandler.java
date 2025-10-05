@@ -16,6 +16,10 @@ public class PlayerDataHandler extends AbstractDataHandler<PlayerData, UUID> {
         return cache;
     }
 
+    public void addData(PlayerData data) {
+        cache.putIfAbsent(data.getUuid(), data);
+    }
+
     public void setData(PlayerData data) {
         cache.put(data.getUuid(), data);
     }
@@ -23,9 +27,5 @@ public class PlayerDataHandler extends AbstractDataHandler<PlayerData, UUID> {
     public PlayerData getData(UUID uuid) {
         return cache.computeIfAbsent(uuid,
                 id -> new PlayerData(id, "Unknown", 0, 0, "speler"));
-    }
-
-    public void addData(PlayerData data) {
-        cache.putIfAbsent(data.getUuid(), data);
     }
 }

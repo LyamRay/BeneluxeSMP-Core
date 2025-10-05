@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import me.lyamray.bnsmpcore.data.player.PlayerData;
 import me.lyamray.bnsmpcore.data.player.PlayerDataHandler;
-import me.lyamray.bnsmpcore.data.warps.WarpsData;
 
 import java.util.Map;
 import java.util.UUID;
@@ -27,7 +26,7 @@ public class DatabasePlayerLoader extends AbstractDatabaseLoader {
         int playtime = ((Number) row.get("playtime")).intValue();
         String rank = (String) row.get("rank");
 
-        PlayerData data = new PlayerData();
+        PlayerData data = new PlayerData(uuid, name, money, playtime, rank);
         PlayerDataHandler.getInstance().setData(data);
     }
 }
