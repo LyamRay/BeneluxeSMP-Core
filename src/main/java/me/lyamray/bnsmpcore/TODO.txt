@@ -1,0 +1,18 @@
+Listeners:
+    - Welcome messages & data creating if player hasn't played before. DONE
+
+Commands:
+    - Making all commands (/discord, /warp {create, [name of a warp to tp to it], delete}, /home {create, remove, [name of a home to tp to it]}, /friends {add, remove,..}. NOT STARTED
+    - Making an action house & shop command and gui. NOT STARTED
+    - Making a rank (admin command) command for add, remove,.. ranks to or from player(s). NOT STARTED
+
+Crates:
+    - Making a custom way to open crates with keys. NOT STARTED
+
+Ranks:
+    - Making a way to add ranks via the command (line 7). NOT STARTED
+
+Quests:
+    -
+    -
+    -
