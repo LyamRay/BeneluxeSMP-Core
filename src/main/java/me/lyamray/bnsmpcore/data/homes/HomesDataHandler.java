@@ -1,40 +1,30 @@
 package me.lyamray.bnsmpcore.data.homes;
 
 import lombok.Getter;
+import me.lyamray.bnsmpcore.data.AbstractDataHandler;
+import me.lyamray.bnsmpcore.data.warps.WarpsData;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
-public class HomesDataHandler {
+public class HomesDataHandler extends AbstractDataHandler<Set<HomesData>> {
 
     @Getter
     private static final HomesDataHandler instance = new HomesDataHandler();
 
-    private final Map<UUID, Set<HomesData>> homeDataCache = new ConcurrentHashMap<>();
-
-    public void setHomes(UUID player, Set<HomesData> homes) {
-        homeDataCache.put(player, ConcurrentHashMap.newKeySet(homes.size()));
-        homeDataCache.get(player).addAll(homes);
+    public void addHome(Integer player, HomesData home) {
+        cache.computeIfAbsent(player, k -> ConcurrentHashMap.newKeySet()).add(home);
     }
 
-    public Set<HomesData> getHomes(UUID player) {
-        return homeDataCache.computeIfAbsent(player, k -> ConcurrentHashMap.newKeySet());
-    }
-
-    public void addHome(UUID player, HomesData home) {
-        homeDataCache.computeIfAbsent(player, k -> ConcurrentHashMap.newKeySet()).add(home);
-    }
-
-    public void removeHome(UUID player, HomesDataHandler home) {
-        Set<HomesData> homes = homeDataCache.get(player);
+    public void removeHome(UUID player, HomesData home) {
+        WarpsData homes = cache.get(player);
         if (homes != null) homes.remove(home);
     }
 
     public boolean hasHome(UUID player, String homeName) {
-        Set<HomesData> homes = homeDataCache.get(player);
+        WarpsData homes = cache.get(player);
         return homes != null && homes.stream().anyMatch(h -> h.getHomeName().equals(homeName));
     }
 }

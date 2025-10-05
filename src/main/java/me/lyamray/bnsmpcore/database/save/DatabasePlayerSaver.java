@@ -1,46 +1,33 @@
 package me.lyamray.bnsmpcore.database.save;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import me.lyamray.bnsmpcore.data.player.PlayerData;
 import me.lyamray.bnsmpcore.data.player.PlayerDataHandler;
-import me.lyamray.bnsmpcore.database.Database;
 
 import java.sql.SQLException;
-import java.util.Map;
+import java.util.*;
 
-@Slf4j
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class DatabasePlayerSaver {
-
+public class DatabasePlayerSaver extends AbstractDatabaseSaver {
     @Getter
     private static final DatabasePlayerSaver instance = new DatabasePlayerSaver();
-    private final Database database = Database.getInstance();
 
-    public void saveAllPlayers() {
-        PlayerDataHandler.getInstance().getPlayerDataCache().values().forEach(this::savePlayer);
+    @Override
+    public String getTableName() {
+        return "players";
     }
 
-    private void savePlayer(PlayerData player) {
-        try {
-            boolean exists = database.exists("players", "uuid = ?", player.getUuid().toString());
-            Map<String, Object> values = Map.of(
+    @Override
+    protected Iterable<Map<String, Object>> getAllEntriesToSave() throws SQLException {
+        List<Map<String, Object>> entries = new ArrayList<>();
+        for (PlayerData player : PlayerDataHandler.getInstance().getPlayerDataCache().values()) {
+            entries.add(Map.of(
                     "uuid", player.getUuid().toString(),
                     "name", player.getName(),
                     "money", player.getMoney(),
                     "playtime", player.getPlaytime(),
                     "rank", player.getRank()
-            );
-
-            if (exists) {
-                database.set("players", values, "uuid = ?", player.getUuid().toString());
-            } else {
-                database.add("players", values);
-            }
-        } catch (SQLException e) {
-            log.warn("Failed to save player {}: {}", player.getUuid(), e.getMessage());
+            ));
         }
+        return entries;
     }
 }

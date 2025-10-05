@@ -1,37 +1,27 @@
 package me.lyamray.bnsmpcore.data.player;
 
 import lombok.Getter;
+import me.lyamray.bnsmpcore.data.AbstractDataHandler;
+import me.lyamray.bnsmpcore.data.warps.WarpsData;
 
-import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
-public class PlayerDataHandler {
+public class PlayerDataHandler extends AbstractDataHandler<PlayerData> {
 
     @Getter
     private static final PlayerDataHandler instance = new PlayerDataHandler();
 
-    private final Map<UUID, PlayerData> playerDataCache = new ConcurrentHashMap<>();
-
-    public void setData(PlayerData data) {
-        playerDataCache.put(data.getUuid(), data);
+    public void setData(WarpsData data) {
+        cache.put(data.getUuid(), data);
     }
 
-    public PlayerData getData(UUID uuid) {
-        return playerDataCache.computeIfAbsent(uuid,
+    public WarpsData getData(Integer uuid) {
+        return cache.computeIfAbsent(uuid,
                 id -> new PlayerData(id, "Unknown", 0, 0, "speler"));
     }
 
-    public void addData(PlayerData data) {
-        playerDataCache.putIfAbsent(data.getUuid(), data);
-    }
-
     public void removeData(UUID uuid) {
-        playerDataCache.remove(uuid);
-    }
-
-    public boolean hasData(UUID uuid) {
-        return playerDataCache.containsKey(uuid);
+        cache.remove(uuid);
     }
 }

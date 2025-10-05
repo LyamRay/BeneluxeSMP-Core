@@ -1,36 +1,33 @@
 package me.lyamray.bnsmpcore.data.warps;
 
 import lombok.Getter;
+import me.lyamray.bnsmpcore.data.AbstractDataHandler;
 
 import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
-public class WarpsDataHandler {
+public class WarpsDataHandler extends AbstractDataHandler<WarpsData> {
 
     @Getter
     private static final WarpsDataHandler instance = new WarpsDataHandler();
 
-    private final Map<String, WarpsData> warpsDataCache = new ConcurrentHashMap<>();
-
     public void setWarp(WarpsData warp) {
-        warpsDataCache.put(warp.getName(), warp);
+        cache.put(warp.getName().hashCode(), warp);
     }
 
     public WarpsData getWarp(String name) {
-        return warpsDataCache.get(name);
+        return cache.get(name.hashCode());
     }
 
     public void removeWarp(String name) {
-        warpsDataCache.remove(name);
+        cache.remove(name.hashCode());
     }
 
     public boolean existsWarp(String name) {
-        return warpsDataCache.containsKey(name);
+        return cache.containsKey(name.hashCode());
     }
 
     public Collection<WarpsData> getAllWarps() {
-        return warpsDataCache.values();
+        return cache.values();
     }
 }
