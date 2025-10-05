@@ -5,11 +5,13 @@ import me.lyamray.bnsmpcore.data.player.PlayerDataHandler;
 import me.lyamray.bnsmpcore.utils.messages.JoinMessages;
 import me.lyamray.bnsmpcore.utils.messages.MiniMessage;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import java.time.Duration;
 import java.util.UUID;
 
 public class PlayerJoinListener implements Listener {
@@ -19,18 +21,32 @@ public class PlayerJoinListener implements Listener {
         Player player = event.getPlayer();
         boolean playerHasPlayed = PlayerDataHandler.getInstance().has(player.getUniqueId());
 
-        Component message = MiniMessage.deserializeMessage(
-                playerHasPlayed
-                        ? JoinMessages.PLAYER_JOIN_MESSAGE.getMessage(player)
-                        : JoinMessages.PLAYER_FIRST_TIME_JOIN_MESSAGE.getMessage(player)
-        );
-
-        player.sendMessage(message);
+        welcome(player, playerHasPlayed);
 
         if (!playerHasPlayed) {
             UUID uuid = player.getUniqueId();
             PlayerData playerData = new PlayerData(uuid, player.getName(), 5000, 0, "Overlever");
             PlayerDataHandler.getInstance().addData(playerData);
         }
+    }
+
+    private void welcome(Player player, boolean playerHasPlayed) {
+        Component message = MiniMessage.deserializeMessage(
+                playerHasPlayed
+                        ? JoinMessages.PLAYER_JOIN_MESSAGE.getMessage(player)
+                        : JoinMessages.PLAYER_FIRST_TIME_JOIN_MESSAGE.getMessage(player)
+        );
+        player.sendMessage(message);
+
+        Component title = MiniMessage.deserializeMessage(
+                playerHasPlayed
+                        ? JoinMessages.TITLE_HAS_JOINED.getMessage(player)
+                        : JoinMessages.TITLE_HAS_NOT_JOINED.getMessage(player)
+        );
+        player.showTitle(Title.title(
+                title,
+                MiniMessage.deserializeMessage(JoinMessages.SUBTITLE.getMessage(player)),
+                Title.Times.times(Duration.ofSeconds(1), Duration.ofSeconds(2), Duration.ofSeconds(1))
+        ));
     }
 }
