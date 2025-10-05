@@ -19,7 +19,7 @@ public class DatabaseWarpsSaver extends AbstractDatabaseSaver {
     @Override
     protected Iterable<Map<String, Object>> getAllEntriesToSave() throws SQLException {
         List<Map<String, Object>> entries = new ArrayList<>();
-        for (WarpsData warp : WarpsDataHandler.getInstance().getWarpsDataCache().values()) {
+        for (WarpsData warp : WarpsDataHandler.getInstance().getCacheMap().values()) {
             entries.add(Map.of(
                     "name", warp.getName(),
                     "x", warp.getX(),

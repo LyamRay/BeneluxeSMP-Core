@@ -20,7 +20,7 @@ public class DatabaseHomesLoader extends AbstractDatabaseLoader {
 
     @Override
     protected void handleRow(Map<String, Object> row) {
-        Integer player = UUID.fromString((String) row.get("player_uuid"));
+        UUID player = UUID.fromString((String) row.get("player_uuid"));
         HomesData home = new HomesData(
                 player,
                 (String) row.get("home_name"),

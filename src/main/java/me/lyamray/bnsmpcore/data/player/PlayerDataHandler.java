@@ -2,26 +2,26 @@ package me.lyamray.bnsmpcore.data.player;
 
 import lombok.Getter;
 import me.lyamray.bnsmpcore.data.AbstractDataHandler;
-import me.lyamray.bnsmpcore.data.warps.WarpsData;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Getter
-public class PlayerDataHandler extends AbstractDataHandler<PlayerData> {
+public class PlayerDataHandler extends AbstractDataHandler<PlayerData, UUID> {
 
     @Getter
     private static final PlayerDataHandler instance = new PlayerDataHandler();
 
-    public void setData(WarpsData data) {
+    public Map<UUID, PlayerData> getCacheMap() {
+        return cache;
+    }
+
+    public void setData(PlayerData data) {
         cache.put(data.getUuid(), data);
     }
 
-    public WarpsData getData(Integer uuid) {
+    public PlayerData getData(UUID uuid) {
         return cache.computeIfAbsent(uuid,
                 id -> new PlayerData(id, "Unknown", 0, 0, "speler"));
-    }
-
-    public void removeData(UUID uuid) {
-        cache.remove(uuid);
     }
 }

@@ -18,7 +18,7 @@ public class DatabaseFriendsLoader extends AbstractDatabaseLoader {
 
     @Override
     protected void handleRow(Map<String, Object> row) {
-        Integer player = UUID.fromString((String) row.get("player_uuid"));
+        UUID player = UUID.fromString((String) row.get("player_uuid"));
         UUID friend = UUID.fromString((String) row.get("friend_uuid"));
         FriendsDataHandler.getInstance().addFriend(player, friend);
     }

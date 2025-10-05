@@ -19,7 +19,7 @@ public class DatabaseHomesSaver extends AbstractDatabaseSaver {
     @Override
     protected Iterable<Map<String, Object>> getAllEntriesToSave() throws SQLException {
         List<Map<String, Object>> entries = new ArrayList<>();
-        HomesDataHandler.getInstance().getHomeDataCache().forEach((player, homes) -> {
+        HomesDataHandler.getInstance().getCacheMap().forEach((player, homes) -> {
             for (HomesData home : homes) {
                 entries.add(Map.of(
                         "player_uuid", player.toString(),

@@ -27,7 +27,7 @@ public class DatabasePlayerLoader extends AbstractDatabaseLoader {
         int playtime = ((Number) row.get("playtime")).intValue();
         String rank = (String) row.get("rank");
 
-        WarpsData data = new PlayerData(uuid, name, money, playtime, rank);
+        PlayerData data = new PlayerData();
         PlayerDataHandler.getInstance().setData(data);
     }
 }

@@ -19,7 +19,7 @@ public class DatabasePlayerSaver extends AbstractDatabaseSaver {
     @Override
     protected Iterable<Map<String, Object>> getAllEntriesToSave() throws SQLException {
         List<Map<String, Object>> entries = new ArrayList<>();
-        for (PlayerData player : PlayerDataHandler.getInstance().getPlayerDataCache().values()) {
+        for (PlayerData player : PlayerDataHandler.getInstance().getCacheMap().values()) {
             entries.add(Map.of(
                     "uuid", player.getUuid().toString(),
                     "name", player.getName(),

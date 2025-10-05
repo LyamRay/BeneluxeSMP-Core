@@ -1,26 +1,24 @@
 package me.lyamray.bnsmpcore.data;
 
-import lombok.Getter;
-import me.lyamray.bnsmpcore.data.warps.WarpsData;
-
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Getter
-public abstract class AbstractDataHandler<T> {
-    protected final Map<Integer, WarpsData> cache = new ConcurrentHashMap<>();
+public abstract class AbstractDataHandler<T, K> {
+    protected final Map<K, T> cache = new ConcurrentHashMap<>();
 
-    public WarpsData get(UUID player) {
-        return cache.get(player);
+    public T get(K key) {
+        return cache.get(key);
     }
 
-    public void set(Integer player, WarpsData data) {
-        cache.put(player, data);
+    public void set(K key, T value) {
+        cache.put(key, value);
     }
 
-    public boolean has(UUID player) {
-        return cache.containsKey(player);
+    public boolean has(K key) {
+        return cache.containsKey(key);
     }
 
+    public void remove(K key) {
+        cache.remove(key);
+    }
 }
