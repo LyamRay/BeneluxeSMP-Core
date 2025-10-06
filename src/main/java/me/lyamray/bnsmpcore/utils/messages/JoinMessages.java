@@ -11,7 +11,7 @@ public enum JoinMessages {
     PLAYER_FIRST_TIME_JOIN_MESSAGE(player -> ("""
             
             <gray> • </gray><gradient:#BFE7EA:#A4D0E1:#BFE7EA><b>BeneluxeSMP</b></gradient><gray>» \
-            <gradient:#D2E3E6:#D2E3E6>Hey. {playername}! Welkom op de BeneluxeSMP</gradient><gradient:#C6E5F1:#C4D0CD> \
+            <gradient:#D2E3E6:#D2E3E6>Hey, {playername}! Welkom op de BeneluxeSMP</gradient><gradient:#C6E5F1:#C4D0CD> \
             server, heel veel speelplezier!</gradient>
             """)
             .replace("{playername}", player.getName())),
@@ -19,7 +19,7 @@ public enum JoinMessages {
     PLAYER_JOIN_MESSAGE(player -> ("""
             
             <gray> • </gray><gradient:#BFE7EA:#A4D0E1:#BFE7EA><b>BeneluxeSMP</b></gradient><gray>» \
-            <gradient:#D2E3E6:#D2E3E6>Hey. {playername}! Welkom terug op de BeneluxeSMP</gradient><gradient:#C6E5F1:#C4D0CD> \
+            <gradient:#D2E3E6:#D2E3E6>Hey, {playername}! Welkom terug op de BeneluxeSMP</gradient><gradient:#C6E5F1:#C4D0CD> \
             server, heel veel speelplezier!</gradient>
             """)
             .replace("{playername}", player.getName())),

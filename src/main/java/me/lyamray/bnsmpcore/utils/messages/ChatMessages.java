@@ -19,16 +19,14 @@ public enum ChatMessages {
 
     OVERLEVER_RANK_CHATMESSAGE((player, string1, string2) -> """
         <gradient:#BBCEDD:#BBC8DB>[Overlever]</gradient><gradient:#BBC8DB:#BBCEDD> {playername}</gradient>\
-        <gray> » </gray><gradient:#C3CBD2:#BAC7D6>{string1}</gradient><gradient:#BAC7D6:#C3CBD2>{string2}</gradient>
-        """
+        <gray> » </gray><gradient:#C3CBD2:#BAC7D6>{string1}</gradient><gradient:#BAC7D6:#C3CBD2>{string2}</gradient>"""
             .replace("{playername}", player.getName())
             .replace("{string1}", string1 != null ? string1 : "")
             .replace("{string2}", string2 != null ? string2 : "")),
 
     AVONTURIER_RANK_CHATMESSAGE((player, string1, string2) -> """
             <gradient:#BBCEDD:#BBC8DB>[Avonturier]</gradient><gradient:#BBC8DB:#BBCEDD> {playername}</gradient>\
-            <gray> » </gray><gradient:#C3CBD2:#BAC7D6>{string1}</gradient><gradient:#BAC7D6:#C3CBD2>{string2}</gradient>
-            """
+            <gray> » </gray><gradient:#C3CBD2:#BAC7D6>{string1}</gradient><gradient:#BAC7D6:#C3CBD2>{string2}</gradient>"""
             .replace("{playername}", player.getName())
             .replace("{string1}", string1 != null ? string1 : "")
             .replace("{string2}", string2 != null ? string2 : ""));
