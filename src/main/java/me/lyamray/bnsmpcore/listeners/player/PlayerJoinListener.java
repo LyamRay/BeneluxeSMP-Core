@@ -1,11 +1,14 @@
 package me.lyamray.bnsmpcore.listeners.player;
 
+import me.lyamray.bnsmpcore.BeneluxeSMPCore;
 import me.lyamray.bnsmpcore.data.player.PlayerData;
 import me.lyamray.bnsmpcore.data.player.PlayerDataHandler;
 import me.lyamray.bnsmpcore.utils.messages.JoinMessages;
 import me.lyamray.bnsmpcore.utils.messages.MiniMessage;
+import me.lyamray.bnsmpcore.utils.messages.TabMessages;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,6 +21,8 @@ public class PlayerJoinListener implements Listener {
 
     @EventHandler
     public void playerJoins(PlayerJoinEvent event) {
+        event.joinMessage(Component.text(""));
+
         Player player = event.getPlayer();
         boolean playerHasPlayed = PlayerDataHandler.getInstance().has(player.getUniqueId());
 
@@ -48,5 +53,9 @@ public class PlayerJoinListener implements Listener {
                 MiniMessage.deserializeMessage(JoinMessages.SUBTITLE.getMessage(player)),
                 Title.Times.times(Duration.ofSeconds(1), Duration.ofSeconds(2), Duration.ofSeconds(1))
         ));
+
+        int aantalSpelers = Bukkit.getOnlinePlayers().size();
+        player.sendPlayerListHeader(MiniMessage.deserializeMessage(TabMessages.HEADER.getMessage(aantalSpelers)));
+        player.sendPlayerListFooter(MiniMessage.deserializeMessage(TabMessages.FOOTER.getMessage(0)));
     }
 }

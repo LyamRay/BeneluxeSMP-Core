@@ -7,14 +7,11 @@ import org.bukkit.entity.Player;
 public enum ChatMessages {
 
     PLAYER_HASNT_GOT_DATA((player, string1, string2) -> """
-            <gray>• </gray>
-            <gradient:#BFE7EA:#A4D0E1:#BFE7EA><bold>BeneluxeSMP</bold></gradient>
-            <gray>» </gray>
+            <gray>• </gray><gradient:#BFE7EA:#A4D0E1:#BFE7EA><bold>BeneluxeSMP</bold></gradient><gray>» </gray>
             <gradient:#D2E3E6:#C4D0CD>Hey, {playername}! Sorry voor het ongemak.</gradient>
             <gradient:#C6E5F1:#B0D0C0>
             Het lijkt alsof jouw data niet bestaat! Gelieve opnieuw te verbinden met de server
-            of neem contact op via de <a href="https://discord.gg/beneluxesmp">Discord</a>.
-            </gradient>
+            of neem contact op via de <a href="https://discord.gg/beneluxesmp">Discord</a>.</gradient>
             """.replace("{playername}", player.getName())),
 
     OVERLEVER_RANK_CHATMESSAGE((player, string1, string2) -> """
