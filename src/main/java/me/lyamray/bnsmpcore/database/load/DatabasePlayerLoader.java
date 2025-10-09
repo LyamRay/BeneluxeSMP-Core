@@ -25,8 +25,11 @@ public class DatabasePlayerLoader extends AbstractDatabaseLoader {
         int money = ((Number) row.get("money")).intValue();
         int playtime = ((Number) row.get("playtime")).intValue();
         String rank = (String) row.get("rank");
+        int sbInt = ((Number) row.get("scoreboardEnabled")).intValue();
+        boolean scoreboardEnabled = sbInt != 0;
+        int claimBlocks = ((Number) row.get("claimBlocks")).intValue();
 
-        PlayerData data = new PlayerData(uuid, name, money, playtime, rank);
+        PlayerData data = new PlayerData(uuid, name, money, playtime, rank, scoreboardEnabled, claimBlocks);
         PlayerDataHandler.getInstance().setData(data);
     }
 }

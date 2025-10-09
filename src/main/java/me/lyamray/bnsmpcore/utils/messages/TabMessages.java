@@ -17,6 +17,21 @@ public enum TabMessages {
     FOOTER(aantal -> ("""
             
             <gradient:#D2E3E6:#D2E3E6>play.</gradient><gradient:#C6E5F1:#C4D0CD>beneluxesmp.be!</gradient>
+            """)),
+
+    OVERLEVER_PLAYER(aantal -> ("""
+            
+            <gradient:#D2E3E6:#D2E3E6>play.</gradient><gradient:#C6E5F1:#C4D0CD>beneluxesmp.be!</gradient>
+            """)),
+
+    VERKENNER_PLAYER(aantal -> ("""
+            
+            <gradient:#D2E3E6:#D2E3E6>play.</gradient><gradient:#C6E5F1:#C4D0CD>beneluxesmp.be!</gradient>
+            """)),
+
+    AVONTURIER_PLAYER(aantal -> ("""
+            
+            <gradient:#D2E3E6:#D2E3E6>play.</gradient><gradient:#C6E5F1:#C4D0CD>beneluxesmp.be!</gradient>
             """));
 
     private final Function<Integer, String> messageFunction;

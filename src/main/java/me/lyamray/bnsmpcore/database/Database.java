@@ -72,7 +72,9 @@ public final class Database {
                             name TEXT NOT NULL,
                             money INTEGER DEFAULT 0,
                             playtime INTEGER DEFAULT 0,
-                            rank TEXT DEFAULT 'speler'
+                            rank TEXT DEFAULT 'Overlever',
+                            scoreboardEnabled INTEGER DEFAULT 1,
+                            claimBlocks INTEGER DEFAULT 0
                         );
                         """,
                 "friends", """
@@ -152,7 +154,6 @@ public final class Database {
     public List<Map<String, Object>> get(String table, String whereClause, Object... params) {
         return executeQuery("SELECT * FROM " + table + (isNotEmpty(whereClause) ? " WHERE " + whereClause : ""), params);
     }
-
 
 
     private void executeUpdate(String sql, Object... params) {

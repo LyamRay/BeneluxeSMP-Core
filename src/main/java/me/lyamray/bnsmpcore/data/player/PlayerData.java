@@ -20,5 +20,7 @@ public class PlayerData {
     private int money;
     private int playtime;
     private String rank;
+    private boolean scoreboardEnabled;
+    private int claimBlocks;
 
 }
