@@ -2,8 +2,10 @@ package me.lyamray.bnsmpcore;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import me.lyamray.bnsmpcore.commands.information.moneyCommand;
 import me.lyamray.bnsmpcore.database.Database;
 import me.lyamray.bnsmpcore.utils.manager.RegisterListenerManager;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 @Slf4j

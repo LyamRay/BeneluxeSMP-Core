@@ -4,6 +4,7 @@ import me.lyamray.bnsmpcore.data.player.PlayerData;
 import me.lyamray.bnsmpcore.data.player.PlayerDataHandler;
 import me.lyamray.bnsmpcore.utils.manager.scoreboard.ScoreboardManager;
 import me.lyamray.bnsmpcore.utils.messages.*;
+import me.lyamray.bnsmpcore.utils.ranks.Ranks;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
@@ -13,9 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.UUID;
 
 public class PlayerJoinListener implements Listener {
@@ -27,15 +25,15 @@ public class PlayerJoinListener implements Listener {
         Player player = event.getPlayer();
         boolean playerHasPlayed = PlayerDataHandler.getInstance().has(player.getUniqueId());
 
-        welcomeMesssages(player, playerHasPlayed);
-        tabMessages(player);
-        scoreBoardMessages(player);
-
         if (!playerHasPlayed) {
             UUID uuid = player.getUniqueId();
             PlayerData playerData = new PlayerData(uuid, player.getName(), 5000, 0, "Overlever", true, 0);
             PlayerDataHandler.getInstance().addData(playerData);
         }
+
+        welcomeMesssages(player, playerHasPlayed);
+        tabMessages(player);
+        scoreBoardMessages(player);
     }
 
     private void welcomeMesssages(Player player, boolean playerHasPlayed) {
@@ -69,20 +67,37 @@ public class PlayerJoinListener implements Listener {
         if (!PlayerDataHandler.getInstance().has(player.getUniqueId())) return;
         PlayerData playerData = PlayerDataHandler.getInstance().getData(player.getUniqueId());
 
-        boolean hasEnabledScoreboard = playerData.isScoreboardEnabled();
-        if (!hasEnabledScoreboard) {
+        if (!playerData.isScoreboardEnabled()) {
             player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
             return;
         }
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
         int claimBlocks = playerData.getClaimBlocks();
         int money = playerData.getMoney();
+
+        String rank = getString(playerData);
 
         ScoreboardManager.getInstance().setScoreboard(
                 player,
                 GlobalMessages.SCOREBOARD_TITLE.getMessage(),
-                ScoreboardMessages.DEFAULT_SCOREBOARD.getLines(player,  claimBlocks, money));
+                ScoreboardMessages.DEFAULT_SCOREBOARD.getLines(player, claimBlocks, money, rank)
+        );
+    }
+
+    private static String getString(PlayerData playerData) {
+        String rankString = playerData.getRank();
+        String rank;
+        switch (rankString.toUpperCase()) {
+            case "OVERLEVER" -> rank = Ranks.OVERLEVER.getMessage();
+            case "VERKENNER" -> rank = Ranks.VERKENNER.getMessage();
+            case "AVONTURIER" -> rank = Ranks.AVONTURIER.getMessage();
+            case "OVERLEVER_PLUS" -> rank = Ranks.OVERLEVER_PLUS.getMessage();
+            case "VETERAAN" -> rank = Ranks.VETERAAN.getMessage();
+            case "HELPER" -> rank = Ranks.HELPER.getMessage();
+            case "MODERATOR" -> rank = Ranks.MODERATOR.getMessage();
+            case "ADMIN" -> rank = Ranks.ADMIN.getMessage();
+            default -> rank = "Unknown Rank";
+        }
+        return rank;
     }
 }

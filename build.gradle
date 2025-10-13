@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id("xyz.jpenilla.run-paper") version "2.3.1"
+    id("com.gradleup.shadow") version "9.2.2"
 }
 
 group = 'me.lyamray'
@@ -12,16 +13,17 @@ repositories {
 }
 
 dependencies {
-    //Paper
+    // Paper
     compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
 
-    //Lombok
+    // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
 
-    //FancyNPCs
+    // FancyNPCs
     compileOnly("de.oliver:FancyNpcs:2.7.0")
 }
+
 
 tasks {
     runServer {
@@ -99,3 +101,4 @@ processResources {
         archiveFileName = "${project.name}-${project.version}.jar"
     }
 }
+

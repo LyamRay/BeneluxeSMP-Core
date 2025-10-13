@@ -9,30 +9,36 @@ import java.util.List;
 @Getter
 public enum ScoreboardMessages {
 
-    DEFAULT_SCOREBOARD((player, claimBlocks, money) -> List.of(
+    DEFAULT_SCOREBOARD((player, claimBlocks, money, rank) -> List.of(
             MiniMessage.deserializeMessage("\n"),
             MiniMessage.deserializeMessage(
-                    "<gradient:#B4CBD0:#A4BCC3>Claimblocks</gradient><gray> » </gray><gradient:#AFD0DD:#619AB1>" + claimBlocks + "</gradient>"
+                    "<gradient:#B4CBD0:#A4BCC3>Rank</gradient><gray> » </gray>" + rank
             ),
             MiniMessage.deserializeMessage(
-                    "<gradient:#B4CBD0:#A4BCC3>Money</gradient><gray> » </gray><gradient:#AFD0DD:#619AB1>€"+ money +"</gradient>"
+                    "<gradient:#B4CBD0:#A4BCC3>Claimblocks</gradient><gray> » </gray><gradient:#AFD0DD:#7DBAD0>" + claimBlocks + "</gradient>"
+            ),
+            MiniMessage.deserializeMessage(
+                    "<gradient:#B4CBD0:#A4BCC3>Money</gradient><gray> » </gray><gradient:#AFD0DD:#7DBAD0>€"+ money +"</gradient>"
+            ),
+            MiniMessage.deserializeMessage(
+                    "<gradient:#B4CBD0:#A4BCC3>Claimblocks</gradient><gray> » </gray><gradient:#AFD0DD:#7DBAD0>" + claimBlocks + "</gradient>"
             ),
             MiniMessage.deserializeMessage("\n"),
-            MiniMessage.deserializeMessage("<gray>play.beneluxesmp.be</gray>")
+            MiniMessage.deserializeMessage("<gradient:#D2E3E6:#D2E3E6>play.</gradient><gradient:#C6E5F1:#C4D0CD>beneluxesmp.be</gradient>")
     ));
 
-    private final MultiFunction<Player, Integer, Integer, List<Component>> messageFunction;
+    private final MultiFunction<Player, Integer, Integer, String, List<Component>> messageFunction;
 
-    ScoreboardMessages(MultiFunction<Player, Integer, Integer, List<Component>> messageFunction) {
+    ScoreboardMessages(MultiFunction<Player, Integer, Integer, String, List<Component>> messageFunction) {
         this.messageFunction = messageFunction;
     }
 
-    public List<Component> getLines(Player player, Integer claimBlocks, Integer money) {
-        return messageFunction.apply(player, claimBlocks, money);
+    public List<Component> getLines(Player player, Integer claimBlocks, Integer money, String rank) {
+        return messageFunction.apply(player, claimBlocks, money, rank);
     }
 
     @FunctionalInterface
-    public interface MultiFunction<A, B, C, R> {
-        R apply(A a, B b, C c);
+    public interface MultiFunction<A, B, C, D, R> {
+        R apply(A a, B b, C c, D d);
     }
 }
