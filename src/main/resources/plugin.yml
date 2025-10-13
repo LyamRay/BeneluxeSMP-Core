@@ -7,4 +7,6 @@ authors: [ LyamRay ]
 description: The core plugin from the Beneluxe-SMP.
 website: https://github.com/LyamRay
 depend: [FancyNpcs]
+commands:
+  data:
 

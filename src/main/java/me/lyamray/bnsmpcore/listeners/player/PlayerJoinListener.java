@@ -2,9 +2,10 @@ package me.lyamray.bnsmpcore.listeners.player;
 
 import me.lyamray.bnsmpcore.data.player.PlayerData;
 import me.lyamray.bnsmpcore.data.player.PlayerDataHandler;
-import me.lyamray.bnsmpcore.utils.manager.scoreboard.ScoreboardManager;
-import me.lyamray.bnsmpcore.utils.messages.*;
-import me.lyamray.bnsmpcore.utils.ranks.Ranks;
+import me.lyamray.bnsmpcore.utils.manager.scoreboard.ScoreboardHandler;
+import me.lyamray.bnsmpcore.utils.manager.tab.TabHandler;
+import me.lyamray.bnsmpcore.utils.messages.JoinMessages;
+import me.lyamray.bnsmpcore.utils.messages.MiniMessage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
@@ -19,8 +20,8 @@ import java.util.UUID;
 public class PlayerJoinListener implements Listener {
 
     @EventHandler
-    public void playerJoins(PlayerJoinEvent event) {
-        event.joinMessage(Component.text(""));
+    public void playerJoined(PlayerJoinEvent event) {
+        event.joinMessage(Component.empty());
 
         Player player = event.getPlayer();
         boolean playerHasPlayed = PlayerDataHandler.getInstance().has(player.getUniqueId());
@@ -32,8 +33,8 @@ public class PlayerJoinListener implements Listener {
         }
 
         welcomeMesssages(player, playerHasPlayed);
-        tabMessages(player);
-        scoreBoardMessages(player);
+        TabHandler.getInstance().updateTabForPlayer(player, Bukkit.getOnlinePlayers().size());
+        ScoreboardHandler.getInstance().updateScoreboardFor(player);
     }
 
     private void welcomeMesssages(Player player, boolean playerHasPlayed) {
@@ -55,49 +56,5 @@ public class PlayerJoinListener implements Listener {
                 MiniMessage.deserializeMessage(JoinMessages.SUBTITLE.getMessage(player)),
                 Title.Times.times(Duration.ofSeconds(1), Duration.ofSeconds(2), Duration.ofSeconds(1))
         ));
-    }
-
-    private void tabMessages(Player player) {
-        int aantalSpelers = Bukkit.getOnlinePlayers().size();
-        player.sendPlayerListHeader(MiniMessage.deserializeMessage(TabMessages.HEADER.getMessage(aantalSpelers)));
-        player.sendPlayerListFooter(MiniMessage.deserializeMessage(TabMessages.FOOTER.getMessage(0)));
-    }
-
-    private void scoreBoardMessages(Player player) {
-        if (!PlayerDataHandler.getInstance().has(player.getUniqueId())) return;
-        PlayerData playerData = PlayerDataHandler.getInstance().getData(player.getUniqueId());
-
-        if (!playerData.isScoreboardEnabled()) {
-            player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-            return;
-        }
-
-        int claimBlocks = playerData.getClaimBlocks();
-        int money = playerData.getMoney();
-
-        String rank = getString(playerData);
-
-        ScoreboardManager.getInstance().setScoreboard(
-                player,
-                GlobalMessages.SCOREBOARD_TITLE.getMessage(),
-                ScoreboardMessages.DEFAULT_SCOREBOARD.getLines(player, claimBlocks, money, rank)
-        );
-    }
-
-    private static String getString(PlayerData playerData) {
-        String rankString = playerData.getRank();
-        String rank;
-        switch (rankString.toUpperCase()) {
-            case "OVERLEVER" -> rank = Ranks.OVERLEVER.getMessage();
-            case "VERKENNER" -> rank = Ranks.VERKENNER.getMessage();
-            case "AVONTURIER" -> rank = Ranks.AVONTURIER.getMessage();
-            case "OVERLEVER_PLUS" -> rank = Ranks.OVERLEVER_PLUS.getMessage();
-            case "VETERAAN" -> rank = Ranks.VETERAAN.getMessage();
-            case "HELPER" -> rank = Ranks.HELPER.getMessage();
-            case "MODERATOR" -> rank = Ranks.MODERATOR.getMessage();
-            case "ADMIN" -> rank = Ranks.ADMIN.getMessage();
-            default -> rank = "Unknown Rank";
-        }
-        return rank;
     }
 }

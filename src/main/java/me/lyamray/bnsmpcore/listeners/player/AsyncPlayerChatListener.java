@@ -1,11 +1,14 @@
 package me.lyamray.bnsmpcore.listeners.player;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
+import me.lyamray.bnsmpcore.BeneluxeSMPCore;
 import me.lyamray.bnsmpcore.data.player.PlayerDataHandler;
 import me.lyamray.bnsmpcore.utils.messages.ChatMessages;
 import me.lyamray.bnsmpcore.utils.messages.MiniMessage;
+import me.lyamray.bnsmpcore.utils.ranks.Ranks;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,9 +17,15 @@ import java.util.Map;
 
 public class AsyncPlayerChatListener implements Listener {
 
-    private static final Map<String, ChatMessages> RANK_MESSAGE_MAP = Map.of(
-            "Overlever", ChatMessages.OVERLEVER_RANK_CHATMESSAGE,
-            "Avonturier", ChatMessages.AVONTURIER_RANK_CHATMESSAGE
+    private static final Map<Ranks, ChatMessages> RANK_MESSAGE_MAP = Map.of(
+            Ranks.OVERLEVER, ChatMessages.OVERLEVER_RANK_CHATMESSAGE,
+            Ranks.VERKENNER, ChatMessages.VERKENNER_RANK_CHATMESSAGE,
+            Ranks.AVONTURIER, ChatMessages.AVONTURIER_RANK_CHATMESSAGE,
+            Ranks.OVERLEVER_PLUS, ChatMessages.OVERLEVER_PLUS_RANK_CHATMESSAGE,
+            Ranks.VETERAAN, ChatMessages.VETERAAN_RANK_CHATMESSAGE,
+            Ranks.HELPER, ChatMessages.HELPER_RANK_CHATMESSAGE,
+            Ranks.MODERATOR, ChatMessages.MODERATOR_RANK_CHATMESSAGE,
+            Ranks.ADMIN, ChatMessages.ADMIN_RANK_CHATMESSAGE
     );
 
     @EventHandler
@@ -28,7 +37,8 @@ public class AsyncPlayerChatListener implements Listener {
             return;
         }
 
-        String rank = getPlayerRank(player);
+        String rankString = getPlayerRank(player);
+        Ranks rank = parseRank(rankString);
         if (rank == null) {
             kickPlayer(player);
             return;
@@ -46,7 +56,7 @@ public class AsyncPlayerChatListener implements Listener {
             String part2 = rawMessage.substring(mid);
 
             if (rankMessage != null) {
-                return MiniMessage.deserializeMessage(rankMessage.getMessage(player, part1, part2));
+                return MiniMessage.deserializeMessage(rankMessage.getMessage(rank, player, part1, part2));
             } else {
                 kickPlayer(player);
                 return Component.empty();
@@ -63,8 +73,17 @@ public class AsyncPlayerChatListener implements Listener {
     }
 
     private void kickPlayer(Player player) {
-        player.kick(MiniMessage.deserializeMessage(
-                ChatMessages.PLAYER_HASNT_GOT_DATA.getMessage(player, "", "")
-        ));
+        Bukkit.getScheduler().runTask(BeneluxeSMPCore.getInstance(), () -> player.kick(MiniMessage.deserializeMessage(
+                ChatMessages.PLAYER_HASNT_GOT_DATA.getMessage(Ranks.OVERLEVER, player, "", "")
+        )));
+    }
+
+    private Ranks parseRank(String rankString) {
+        if (rankString == null) return null;
+        try {
+            return Ranks.valueOf(rankString.toUpperCase());
+        } catch (IllegalArgumentException ignored) {
+            return null;
+        }
     }
 }

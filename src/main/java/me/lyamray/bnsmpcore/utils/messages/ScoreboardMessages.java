@@ -10,7 +10,7 @@ import java.util.List;
 public enum ScoreboardMessages {
 
     DEFAULT_SCOREBOARD((player, claimBlocks, money, rank) -> List.of(
-            MiniMessage.deserializeMessage("\n"),
+            MiniMessage.deserializeMessage(" "),
             MiniMessage.deserializeMessage(
                     "<gradient:#B4CBD0:#A4BCC3>Rank</gradient><gray> » </gray>" + rank
             ),
@@ -18,12 +18,9 @@ public enum ScoreboardMessages {
                     "<gradient:#B4CBD0:#A4BCC3>Claimblocks</gradient><gray> » </gray><gradient:#AFD0DD:#7DBAD0>" + claimBlocks + "</gradient>"
             ),
             MiniMessage.deserializeMessage(
-                    "<gradient:#B4CBD0:#A4BCC3>Money</gradient><gray> » </gray><gradient:#AFD0DD:#7DBAD0>€"+ money +"</gradient>"
+                    "<gradient:#B4CBD0:#A4BCC3>Money</gradient><gray> » </gray><gradient:#AFD0DD:#7DBAD0>€" + money + "</gradient>"
             ),
-            MiniMessage.deserializeMessage(
-                    "<gradient:#B4CBD0:#A4BCC3>Claimblocks</gradient><gray> » </gray><gradient:#AFD0DD:#7DBAD0>" + claimBlocks + "</gradient>"
-            ),
-            MiniMessage.deserializeMessage("\n"),
+            MiniMessage.deserializeMessage(" "), // Spacer
             MiniMessage.deserializeMessage("<gradient:#D2E3E6:#D2E3E6>play.</gradient><gradient:#C6E5F1:#C4D0CD>beneluxesmp.be</gradient>")
     ));
 
