@@ -2,7 +2,7 @@ package me.lyamray.bnsmpcore;
 
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.Getter;
-import me.lyamray.bnsmpcore.commands.data.dataCommand;
+import me.lyamray.bnsmpcore.commands.data.DataCommand;
 import me.lyamray.bnsmpcore.database.Database;
 import me.lyamray.bnsmpcore.utils.handlers.RegisterListenerManager;
 import me.lyamray.bnsmpcore.utils.handlers.passenger.PlayerNameHandler;
@@ -28,7 +28,7 @@ public final class BeneluxeSMPCore extends JavaPlugin {
         RegisterListenerManager.registerAll();
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands ->
-                commands.registrar().register(dataCommand.getInstance().create(), "Have a nice party"));
+                commands.registrar().register(DataCommand.getInstance().create(), "Have a nice party"));
 
         startAllTasks();
     }

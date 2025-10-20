@@ -12,6 +12,7 @@ public class MiniMessage {
         return miniMessage.deserialize(input);
     }
 
+
     public void sendMessage(String input, Player player) {
         player.sendRichMessage(input);
     }

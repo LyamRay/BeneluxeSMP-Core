@@ -5,13 +5,14 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.Commands;
 import lombok.Getter;
 
-public class dataCommand {
+public class DataCommand {
 
     @Getter
-    private static final dataCommand instance = new dataCommand();
+    private static final DataCommand instance = new DataCommand();
     public LiteralCommandNode<CommandSourceStack> create() {
         return Commands.literal("data")
                 .then(new SetRankSubcommand().create())
+                .then(new GetRankSubcommand().create())
                 .build();
     }
 }

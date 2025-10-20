@@ -1,11 +1,14 @@
 package me.lyamray.bnsmpcore.commands.data;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import com.mojang.brigadier.Message;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
@@ -19,14 +22,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
+import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import static java.util.Arrays.stream;
 
 @NullMarked
 public record SetRankSubcommand() {
 
-    private static final Set<String> ALLOWED_RANKS = Set.of("ADMIN", "MODERATOR", "HELPER");
+    private static final Set<String> ALLOWED_RANKS = Set.of("ADMIN");
 
     public LiteralArgumentBuilder<CommandSourceStack> create() {
         return Commands.literal("setrank")
@@ -47,78 +54,103 @@ public record SetRankSubcommand() {
 
     private RequiredArgumentBuilder<CommandSourceStack, String> rankArgument() {
         return Commands.argument("rank", StringArgumentType.word())
-                .suggests((ctx, builder) -> {
-                    stream(Ranks.values())
-                            .map(Enum::name)
-                            .filter(name -> name.toLowerCase().startsWith(builder.getRemainingLowerCase()))
-                            .forEach(builder::suggest);
-                    return builder.buildFuture();
-                })
-                .executes(ctx -> {
-                    final CommandSourceStack source = ctx.getSource();
+                .suggests(this::suggestRanks)
+                .executes(this::executeSetRank);
+    }
 
-                    if (!hasRequiredRank(source)) {
-                        source.getSender().sendRichMessage("<red>You do not have permission to execute this command.");
-                        return 0;
-                    }
+    private CompletableFuture<Suggestions> suggestRanks(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
+        stream(Ranks.values())
+                .map(Enum::name)
+                .filter(name -> name.toLowerCase().startsWith(builder.getRemainingLowerCase()))
+                .forEach(builder::suggest);
+        return builder.buildFuture();
+    }
 
-                    var profilesResolver = ctx.getArgument("player", PlayerProfileListResolver.class);
-                    var profiles = profilesResolver.resolve(source);
+    private int executeSetRank(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        CommandSourceStack source = ctx.getSource();
 
-                    if (profiles.isEmpty()) {
-                        source.getSender().sendRichMessage("<red>No players found.");
-                        return 0;
-                    }
+        if (!hasRequiredRank(source)) {
+            sendNoPermissionMessage(source);
+            return 0;
+        }
 
-                    Ranks rank = resolveRank(ctx, source);
+        var profiles = resolveProfiles(ctx, source);
+        if (profiles.isEmpty()) return 0;
 
-                    for (var profile : profiles) {
-                        PlayerData data = PlayerDataHandler.getInstance().getData(profile.getId());
-                        data.setRank(rank.name());
-                        PlayerDataHandler.getInstance().setData(data);
+        Optional<Ranks> optionalRank = resolveRank(ctx, source);
+        if (optionalRank.isEmpty()) return 0;
 
-                        if (profile.getId() == null) return 0;
+        Ranks rank = optionalRank.get();
 
-                        Player onlinePlayer = Bukkit.getPlayer(profile.getId());
-                        if (onlinePlayer != null) {
-                            onlinePlayer.sendMessage(MiniMessage.miniMessage().deserialize(
-                                    "<green>Your rank has been updated to <rank>",
-                                    Placeholder.unparsed("rank", rank.name())
-                            ));
-                        }
-                    }
+        for (var profile : profiles) {
 
-                    // Send feedback to executor
-                    source.getSender().sendRichMessage(
-                            "<green>Updated rank for <count> player(s) to <rank>",
-                            Placeholder.unparsed("count", String.valueOf(profiles.size())),
-                            Placeholder.unparsed("rank", rank.name())
-                    );
+            if (profile.getId() == null) return 0;
 
-                    return 1;
-                });
+            updatePlayerRank(profile.getId(), rank);
+            sendOnlineFeedback(profile.getId(), rank);
+        }
+
+        sendExecutorFeedback(source, profiles.size(), rank);
+        return 1;
+    }
+
+    private Collection<PlayerProfile> resolveProfiles(CommandContext<CommandSourceStack> ctx, CommandSourceStack source) throws CommandSyntaxException {
+        var resolver = ctx.getArgument("player", PlayerProfileListResolver.class);
+        var profiles = resolver.resolve(source);
+
+        if (profiles.isEmpty()) {
+            source.getSender().sendRichMessage("<red>No players found.");
+        }
+        return profiles;
+    }
+
+    private void updatePlayerRank(UUID uuid, Ranks rank) {
+        PlayerData data = PlayerDataHandler.getInstance().getData(uuid);
+        data.setRank(rank.name());
+        PlayerDataHandler.getInstance().setData(data);
+    }
+
+    private void sendOnlineFeedback(UUID uuid, Ranks rank) {
+        Player onlinePlayer = Bukkit.getPlayer(uuid);
+        if (onlinePlayer != null) {
+            onlinePlayer.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "<green>Your rank has been updated to <rank>",
+                    Placeholder.unparsed("rank", rank.name())
+            ));
+        }
+    }
+
+    private void sendExecutorFeedback(CommandSourceStack source, int count, Ranks rank) {
+        source.getSender().sendRichMessage(
+                "<green>Updated rank for <count> player(s) to <rank>",
+                Placeholder.unparsed("count", String.valueOf(count)),
+                Placeholder.unparsed("rank", rank.name())
+        );
+    }
+
+    private void sendNoPermissionMessage(CommandSourceStack source) {
+        source.getSender().sendRichMessage("<red>You do not have permission to execute this command.");
     }
 
     private boolean hasRequiredRank(CommandSourceStack source) {
         var executor = source.getExecutor();
-        if (executor == null) return true; // console
+        if (executor == null) return true;
 
         PlayerData playerData = PlayerDataHandler.getInstance().getData(executor.getUniqueId());
         return ALLOWED_RANKS.stream()
                 .anyMatch(rank -> rank.equalsIgnoreCase(playerData.getRank()));
     }
 
-    private Ranks resolveRank(CommandContext<CommandSourceStack> ctx, CommandSourceStack source) throws CommandSyntaxException {
+    private Optional<Ranks> resolveRank(CommandContext<CommandSourceStack> ctx, CommandSourceStack source) {
         String rankName = ctx.getArgument("rank", String.class).toUpperCase();
         try {
-            return Ranks.valueOf(rankName);
+            return Optional.of(Ranks.valueOf(rankName));
         } catch (IllegalArgumentException e) {
             source.getSender().sendRichMessage("<red>Invalid rank. Available ranks:");
             for (Ranks r : Ranks.values()) {
                 source.getSender().sendRichMessage("<gray>- " + r.name());
             }
-            throw new CommandSyntaxException(null,
-                    (Message) MiniMessage.miniMessage().deserialize("<red>Invalid rank"));
+            return Optional.empty();
         }
     }
 }
