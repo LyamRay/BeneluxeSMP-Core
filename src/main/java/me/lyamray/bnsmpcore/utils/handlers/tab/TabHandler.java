@@ -1,4 +1,4 @@
-package me.lyamray.bnsmpcore.utils.manager.tab;
+package me.lyamray.bnsmpcore.utils.handlers.tab;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 @Getter
 public enum GlobalMessages {
 
-    SCOREBOARD_TITLE(() ->
+    BENELUXE_TITLE(() ->
             MiniMessage.deserializeMessage("<gray> • </gray><gradient:#BFE7EA:#A4D0E1:#BFE7EA><b>BeneluxeSMP</b></gradient><gray>"));
 
     private final Supplier<Component> messageSupplier;
@@ -21,3 +21,4 @@ public enum GlobalMessages {
         return messageSupplier.get();
     }
 }
+

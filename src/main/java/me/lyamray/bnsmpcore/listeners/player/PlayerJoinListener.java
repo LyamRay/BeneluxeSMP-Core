@@ -2,13 +2,16 @@ package me.lyamray.bnsmpcore.listeners.player;
 
 import me.lyamray.bnsmpcore.data.player.PlayerData;
 import me.lyamray.bnsmpcore.data.player.PlayerDataHandler;
-import me.lyamray.bnsmpcore.utils.manager.scoreboard.ScoreboardHandler;
-import me.lyamray.bnsmpcore.utils.manager.tab.TabHandler;
-import me.lyamray.bnsmpcore.utils.messages.JoinMessages;
+import me.lyamray.bnsmpcore.utils.handlers.holograms.HologramHandler;
+import me.lyamray.bnsmpcore.utils.handlers.passenger.PlayerNameHandler;
+import me.lyamray.bnsmpcore.utils.handlers.scoreboard.ScoreboardHandler;
+import me.lyamray.bnsmpcore.utils.handlers.tab.TabHandler;
+import me.lyamray.bnsmpcore.utils.messages.PlayerMessages;
 import me.lyamray.bnsmpcore.utils.messages.MiniMessage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,14 +28,23 @@ public class PlayerJoinListener implements Listener {
 
         Player player = event.getPlayer();
         boolean playerHasPlayed = PlayerDataHandler.getInstance().has(player.getUniqueId());
+        UUID uuid = player.getUniqueId();
+        PlayerData playerData = new PlayerData(uuid, player.getName(), 5000, 0, "OVERLEVER", true, 0);
+        PlayerData data = PlayerDataHandler.getInstance().getData(player.getUniqueId());
 
         if (!playerHasPlayed) {
-            UUID uuid = player.getUniqueId();
-            PlayerData playerData = new PlayerData(uuid, player.getName(), 5000, 0, "Overlever", true, 0);
             PlayerDataHandler.getInstance().addData(playerData);
+
+            Location location = new Location(Bukkit.getWorld("spawn"), 0, 100, 0).toCenterLocation();
+            location.setYaw(180);
+            location.setPitch(0);
+            player.getPassengers().clear();
+            player.teleportAsync(location);
+            PlayerNameHandler.getInstance().updateNameFor(player, data);
         }
 
         welcomeMesssages(player, playerHasPlayed);
+        PlayerNameHandler.getInstance().updateNameFor(player, data);
         TabHandler.getInstance().updateTabForPlayer(player, Bukkit.getOnlinePlayers().size());
         ScoreboardHandler.getInstance().updateScoreboardFor(player);
     }
@@ -40,20 +52,20 @@ public class PlayerJoinListener implements Listener {
     private void welcomeMesssages(Player player, boolean playerHasPlayed) {
         Component message = MiniMessage.deserializeMessage(
                 playerHasPlayed
-                        ? JoinMessages.PLAYER_JOIN_MESSAGE.getMessage(player)
-                        : JoinMessages.PLAYER_FIRST_TIME_JOIN_MESSAGE.getMessage(player)
+                        ? PlayerMessages.PLAYER_JOIN_MESSAGE.getMessage(player)
+                        : PlayerMessages.PLAYER_FIRST_TIME_JOIN_MESSAGE.getMessage(player)
         );
         player.sendMessage(message);
 
         Component title = MiniMessage.deserializeMessage(
                 playerHasPlayed
-                        ? JoinMessages.TITLE_HAS_JOINED.getMessage(player)
-                        : JoinMessages.TITLE_HAS_NOT_JOINED.getMessage(player)
+                        ? PlayerMessages.TITLE_HAS_JOINED.getMessage(player)
+                        : PlayerMessages.TITLE_HAS_NOT_JOINED.getMessage(player)
         );
 
         player.showTitle(Title.title(
                 title,
-                MiniMessage.deserializeMessage(JoinMessages.SUBTITLE.getMessage(player)),
+                MiniMessage.deserializeMessage(PlayerMessages.SUBTITLE.getMessage(player)),
                 Title.Times.times(Duration.ofSeconds(1), Duration.ofSeconds(2), Duration.ofSeconds(1))
         ));
     }

@@ -22,6 +22,10 @@ dependencies {
 
     // FancyNPCs
     compileOnly("de.oliver:FancyNpcs:2.7.0")
+
+    //FancyHolograms
+    compileOnly("de.oliver:FancyHolograms:2.8.0")
+
 }
 
 

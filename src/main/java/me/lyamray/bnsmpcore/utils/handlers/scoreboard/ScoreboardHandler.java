@@ -1,4 +1,4 @@
-package me.lyamray.bnsmpcore.utils.manager.scoreboard;
+package me.lyamray.bnsmpcore.utils.handlers.scoreboard;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -67,7 +67,7 @@ public class ScoreboardHandler {
 
         ScoreboardManager.getInstance().setScoreboard(
                 player,
-                GlobalMessages.SCOREBOARD_TITLE.getMessage(),
+                GlobalMessages.BENELUXE_TITLE.getMessage(),
                 lines
         );
     }

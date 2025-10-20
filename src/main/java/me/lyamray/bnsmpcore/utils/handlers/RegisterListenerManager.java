@@ -1,4 +1,4 @@
-package me.lyamray.bnsmpcore.utils.manager;
+package me.lyamray.bnsmpcore.utils.handlers;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -6,6 +6,7 @@ import me.lyamray.bnsmpcore.BeneluxeSMPCore;
 import me.lyamray.bnsmpcore.listeners.player.AsyncPlayerChatListener;
 import me.lyamray.bnsmpcore.listeners.player.PlayerJoinListener;
 import me.lyamray.bnsmpcore.listeners.player.PlayerLeaveListener;
+import me.lyamray.bnsmpcore.listeners.player.PlayerMoveListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
@@ -19,7 +20,8 @@ public class RegisterListenerManager {
         List<Class<? extends Listener>> listeners = List.of(
                 PlayerJoinListener.class,
                 PlayerLeaveListener.class,
-                AsyncPlayerChatListener.class
+                AsyncPlayerChatListener.class,
+                PlayerMoveListener.class
         );
 
         for (Class<? extends Listener> clazz : listeners) {

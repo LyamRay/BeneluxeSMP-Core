@@ -1,4 +1,4 @@
-package me.lyamray.bnsmpcore.utils.manager.scoreboard;
+package me.lyamray.bnsmpcore.utils.handlers.scoreboard;
 
 import io.papermc.paper.scoreboard.numbers.NumberFormat;
 import lombok.Getter;

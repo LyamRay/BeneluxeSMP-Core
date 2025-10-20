@@ -1,4 +1,4 @@
-package me.lyamray.bnsmpcore.utils.manager.scoreboard;
+package me.lyamray.bnsmpcore.utils.handlers.scoreboard;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;

@@ -25,4 +25,7 @@ public class MiniMessage {
             player.sendMessage(Component.empty());
         }
     }
+    public String escapeTags(String input) {
+        return miniMessage.escapeTags(input);
+    }
 }
