@@ -4,7 +4,6 @@ import lombok.Getter;
 import me.lyamray.bnsmpcore.data.player.PlayerData;
 import me.lyamray.bnsmpcore.data.player.PlayerDataHandler;
 
-import java.sql.SQLException;
 import java.util.*;
 
 public class DatabasePlayerSaver extends AbstractDatabaseSaver {
@@ -17,7 +16,7 @@ public class DatabasePlayerSaver extends AbstractDatabaseSaver {
     }
 
     @Override
-    protected Iterable<Map<String, Object>> getAllEntriesToSave() throws SQLException {
+    protected Iterable<Map<String, Object>> getAllEntriesToSave() {
         List<Map<String, Object>> entries = new ArrayList<>();
         for (PlayerData player : PlayerDataHandler.getInstance().getCacheMap().values()) {
             entries.add(Map.of(

@@ -1,9 +1,8 @@
 package me.lyamray.bnsmpcore.commands.data;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
-import com.mojang.brigadier.Message;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -15,9 +14,9 @@ import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.command.brigadier.argument.resolvers.PlayerProfileListResolver;
 import me.lyamray.bnsmpcore.data.player.PlayerData;
 import me.lyamray.bnsmpcore.data.player.PlayerDataHandler;
+import me.lyamray.bnsmpcore.utils.messages.GlobalMessages;
+import me.lyamray.bnsmpcore.utils.messages.MiniMessage;
 import me.lyamray.bnsmpcore.utils.ranks.Ranks;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
@@ -83,14 +82,13 @@ public record SetRankSubcommand() {
         Ranks rank = optionalRank.get();
 
         for (var profile : profiles) {
-
             if (profile.getId() == null) return 0;
 
             updatePlayerRank(profile.getId(), rank);
-            sendOnlineFeedback(profile.getId(), rank);
+            sendRankUpdatedMessage(profile.getId(), rank);
+            sendExecutorFeedback(source, profile.getName(), rank);
         }
 
-        sendExecutorFeedback(source, profiles.size(), rank);
         return 1;
     }
 
@@ -99,7 +97,10 @@ public record SetRankSubcommand() {
         var profiles = resolver.resolve(source);
 
         if (profiles.isEmpty()) {
-            source.getSender().sendRichMessage("<red>No players found.");
+            source.getSender().sendMessage(MiniMessage.deserializeMessage(
+                    GlobalMessages.BENELUXE_TITLE.getMessage() +
+                            "<gray> » <red>Geen spelers gevonden.</red>"
+            ));
         }
         return profiles;
     }
@@ -110,26 +111,33 @@ public record SetRankSubcommand() {
         PlayerDataHandler.getInstance().setData(data);
     }
 
-    private void sendOnlineFeedback(UUID uuid, Ranks rank) {
+    private void sendRankUpdatedMessage(UUID uuid, Ranks rank) {
         Player onlinePlayer = Bukkit.getPlayer(uuid);
         if (onlinePlayer != null) {
-            onlinePlayer.sendMessage(MiniMessage.miniMessage().deserialize(
-                    "<green>Your rank has been updated to <rank>",
-                    Placeholder.unparsed("rank", rank.name())
-            ));
+            String message = (GlobalMessages.BENELUXE_TITLE.getMessage() +
+                    "<gray> » <gradient:#D2E3E6:#D2E3E6>Hey, {playername}! Je hebt een nieuwe rank ontvangen. </gradient><gradient:#C6E5F1:#C4D0CD>" +
+                    "Jij hebt nu de rank: {rank}!</gradient>")
+                    .replace("{playername}", onlinePlayer.getName())
+                    .replace("{rank}", rank.name());
+
+            onlinePlayer.sendMessage(MiniMessage.deserializeMessage(message));
         }
     }
 
-    private void sendExecutorFeedback(CommandSourceStack source, int count, Ranks rank) {
-        source.getSender().sendRichMessage(
-                "<green>Updated rank for <count> player(s) to <rank>",
-                Placeholder.unparsed("count", String.valueOf(count)),
-                Placeholder.unparsed("rank", rank.name())
-        );
+    private void sendExecutorFeedback(CommandSourceStack source, String name, Ranks rank) {
+        String message = (GlobalMessages.BENELUXE_TITLE.getMessage() +
+                "<gray> » <gradient:#C6E5F1:#C4D0CD>Je hebt succesvol de rank van {playername} aangepast naar {rank}.</gradient>")
+                .replace("{playername}", name)
+                .replace("{rank}", rank.name());
+
+        source.getSender().sendMessage(MiniMessage.deserializeMessage(message));
     }
 
     private void sendNoPermissionMessage(CommandSourceStack source) {
-        source.getSender().sendRichMessage("<red>You do not have permission to execute this command.");
+        source.getSender().sendMessage(MiniMessage.deserializeMessage(
+                GlobalMessages.BENELUXE_TITLE.getMessage() +
+                        "<gray> » <red>Je hebt niet de juiste permissies om dit commando uit te voeren.</red>"
+        ));
     }
 
     private boolean hasRequiredRank(CommandSourceStack source) {
@@ -146,9 +154,14 @@ public record SetRankSubcommand() {
         try {
             return Optional.of(Ranks.valueOf(rankName));
         } catch (IllegalArgumentException e) {
-            source.getSender().sendRichMessage("<red>Invalid rank. Available ranks:");
+            source.getSender().sendMessage(MiniMessage.deserializeMessage(
+                    GlobalMessages.BENELUXE_TITLE.getMessage() +
+                            "<gray> » <red>Je hebt een ongeldige rank opgegeven. Beschikbare ranks:</red>"
+            ));
             for (Ranks r : Ranks.values()) {
-                source.getSender().sendRichMessage("<gray>- " + r.name());
+                source.getSender().sendMessage(MiniMessage.deserializeMessage(
+                        "<gray>- <#C6E5F1>" + r.name() + "</#C6E5F1>"
+                ));
             }
             return Optional.empty();
         }

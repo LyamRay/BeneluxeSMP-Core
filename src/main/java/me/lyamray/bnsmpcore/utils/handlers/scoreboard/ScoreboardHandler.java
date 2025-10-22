@@ -6,6 +6,7 @@ import me.lyamray.bnsmpcore.BeneluxeSMPCore;
 import me.lyamray.bnsmpcore.data.player.PlayerData;
 import me.lyamray.bnsmpcore.data.player.PlayerDataHandler;
 import me.lyamray.bnsmpcore.utils.messages.GlobalMessages;
+import me.lyamray.bnsmpcore.utils.messages.MiniMessage;
 import me.lyamray.bnsmpcore.utils.messages.ScoreboardMessages;
 import me.lyamray.bnsmpcore.utils.ranks.Ranks;
 import org.bukkit.Bukkit;
@@ -57,8 +58,8 @@ public class ScoreboardHandler {
             return;
         }
 
-        int claimBlocks = data.getClaimBlocks();
-        int money = data.getMoney();
+        long claimBlocks = data.getClaimBlocks();
+        long money = data.getMoney();
 
         Ranks rankEnum = parseRank(data.getRank());
         String rank = rankEnum != null ? rankEnum.getMessage() : "<gray>Unknown</gray>";
@@ -67,7 +68,7 @@ public class ScoreboardHandler {
 
         ScoreboardManager.getInstance().setScoreboard(
                 player,
-                GlobalMessages.BENELUXE_TITLE.getMessage(),
+                MiniMessage.deserializeMessage(GlobalMessages.BENELUXE_TITLE.getMessage()),
                 lines
         );
     }

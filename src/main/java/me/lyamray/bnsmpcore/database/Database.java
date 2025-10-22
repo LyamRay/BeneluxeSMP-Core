@@ -72,7 +72,7 @@ public final class Database {
                             name TEXT NOT NULL,
                             money INTEGER DEFAULT 0,
                             playtime INTEGER DEFAULT 0,
-                            rank TEXT DEFAULT 'Overlever',
+                            rank TEXT DEFAULT 'OVERLEVER',
                             scoreboardEnabled INTEGER DEFAULT 1,
                             claimBlocks INTEGER DEFAULT 0
                         );
@@ -120,7 +120,6 @@ public final class Database {
             });
         }
     }
-
 
 
     public void add(String table, Map<String, Object> values) {

@@ -22,12 +22,12 @@ public class DatabasePlayerLoader extends AbstractDatabaseLoader {
     protected void handleRow(Map<String, Object> row) {
         UUID uuid = UUID.fromString((String) row.get("uuid"));
         String name = (String) row.get("name");
-        int money = ((Number) row.get("money")).intValue();
-        int playtime = ((Number) row.get("playtime")).intValue();
+        long money = ((Number) row.get("money")).intValue();
+        long playtime = ((Number) row.get("playtime")).intValue();
         String rank = (String) row.get("rank");
         int sbInt = ((Number) row.get("scoreboardEnabled")).intValue();
         boolean scoreboardEnabled = sbInt != 0;
-        int claimBlocks = ((Number) row.get("claimBlocks")).intValue();
+        long claimBlocks = ((Number) row.get("claimBlocks")).intValue();
 
         PlayerData data = new PlayerData(uuid, name, money, playtime, rank, scoreboardEnabled, claimBlocks);
         PlayerDataHandler.getInstance().setData(data);

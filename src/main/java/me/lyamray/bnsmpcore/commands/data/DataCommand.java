@@ -13,6 +13,7 @@ public class DataCommand {
         return Commands.literal("data")
                 .then(new SetRankSubcommand().create())
                 .then(new GetRankSubcommand().create())
+                .then(new SetMoneySubcommand().create())
                 .build();
     }
 }

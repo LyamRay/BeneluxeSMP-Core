@@ -17,10 +17,10 @@ public class PlayerData {
 
     private UUID uuid;
     private String name;
-    private int money;
-    private int playtime;
+    private long money;
+    private long playtime;
     private String rank;
     private boolean scoreboardEnabled;
-    private int claimBlocks;
+    private long claimBlocks;
 
 }
