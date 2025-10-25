@@ -22,12 +22,12 @@ import java.util.Set;
 import java.util.UUID;
 
 @NullMarked
-public record SetMoneySubcommand() {
+public record SetClaimBlocksSubcommand() {
 
     private static final Set<String> ALLOWED_RANKS = Set.of("ADMIN");
 
     public LiteralArgumentBuilder<CommandSourceStack> create() {
-        return Commands.literal("setmoney")
+        return Commands.literal("setclaimblocks")
                 .then(playerProfilesArgument()
                         .then(amountArgument()));
     }
@@ -45,10 +45,10 @@ public record SetMoneySubcommand() {
 
     private RequiredArgumentBuilder<CommandSourceStack, Long> amountArgument() {
         return Commands.argument("amount", LongArgumentType.longArg(0))
-                .executes(this::executeSetMoney);
+                .executes(this::executeSetClaimBlocks);
     }
 
-    private int executeSetMoney(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+    private int executeSetClaimBlocks(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         CommandSourceStack source = ctx.getSource();
 
         if (!hasRequiredRank(source)) {
@@ -67,34 +67,30 @@ public record SetMoneySubcommand() {
         long amount = ctx.getArgument("amount", Long.class);
 
         for (PlayerProfile profile : profiles) {
-            if (profile.getId() == null) return 0;
-            if (profile.getName() == null) return 0;
-
+            if (profile.getId() == null || profile.getName() == null) continue;
 
             UUID uuid = profile.getId();
-            updatePlayerMoney(uuid, amount);
-            sendMoneyUpdatedMessage(uuid, amount);
+            updatePlayerClaimBlocks(uuid, amount);
+            sendClaimBlocksUpdatedMessage(uuid, amount);
             sendExecutorFeedback(source, profile.getName(), amount);
         }
 
         return 1;
     }
 
-
-    private void updatePlayerMoney(UUID uuid, long amount) {
+    private void updatePlayerClaimBlocks(UUID uuid, long amount) {
         PlayerData data = PlayerDataHandler.getInstance().getData(uuid);
-        data.setMoney(amount);
+        data.setClaimBlocks(amount);
         PlayerDataHandler.getInstance().setData(data);
     }
 
-
-    private void sendMoneyUpdatedMessage(UUID uuid, long amount) {
+    private void sendClaimBlocksUpdatedMessage(UUID uuid, long amount) {
         Player onlinePlayer = Bukkit.getPlayer(uuid);
         if (onlinePlayer == null) return;
 
         String message = (GlobalMessages.BENELUXE_TITLE.getMessage() +
                 "<gray> » <gradient:#D2E3E6:#D2E3E6>Hey, {playername}! </gradient>" +
-                "<gradient:#C6E5F1:#C4D0CD>Je saldo is ingesteld op {amount} coins.</gradient>")
+                "<gradient:#C6E5F1:#C4D0CD>Je claimblocks zijn ingesteld op {amount}.</gradient>")
                 .replace("{playername}", onlinePlayer.getName())
                 .replace("{amount}", String.valueOf(amount));
 
@@ -103,7 +99,7 @@ public record SetMoneySubcommand() {
 
     private void sendExecutorFeedback(CommandSourceStack source, String name , long amount) {
         String message = (GlobalMessages.BENELUXE_TITLE.getMessage() +
-                "<gray> » <gradient:#C6E5F1:#C4D0CD>Je hebt succesvol het saldo van {playername} aangepast naar {amount} coins.</gradient>")
+                "<gray> » <gradient:#C6E5F1:#C4D0CD>Je hebt succesvol de claimblocks van {playername} aangepast naar {amount}.</gradient>")
                 .replace("{playername}", name)
                 .replace("{amount}", String.valueOf(amount));
 

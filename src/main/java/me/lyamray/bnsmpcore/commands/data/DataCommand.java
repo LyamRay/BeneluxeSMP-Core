@@ -14,6 +14,9 @@ public class DataCommand {
                 .then(new SetRankSubcommand().create())
                 .then(new GetRankSubcommand().create())
                 .then(new SetMoneySubcommand().create())
+                .then(new GetMoneySubcommand().create())
+                .then(new SetClaimBlocksSubcommand().create())
+                .then(new GetClaimBlocksSubcommand().create())
                 .build();
     }
 }

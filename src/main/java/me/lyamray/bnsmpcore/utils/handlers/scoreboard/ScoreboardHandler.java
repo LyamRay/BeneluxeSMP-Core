@@ -57,14 +57,13 @@ public class ScoreboardHandler {
             player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
             return;
         }
-
-        long claimBlocks = data.getClaimBlocks();
-        long money = data.getMoney();
-
         Ranks rankEnum = parseRank(data.getRank());
         String rank = rankEnum != null ? rankEnum.getMessage() : "<gray>Unknown</gray>";
+        long claimBlocks = data.getClaimBlocks();
+        long money = data.getMoney();
+        int credits = data.getCredits();
 
-        var lines = ScoreboardMessages.DEFAULT_SCOREBOARD.getLines(player, claimBlocks, money, rank);
+        var lines = ScoreboardMessages.DEFAULT_SCOREBOARD.getLines(player, claimBlocks, money, rank, credits);
 
         ScoreboardManager.getInstance().setScoreboard(
                 player,

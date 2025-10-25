@@ -26,7 +26,8 @@ public class DatabasePlayerSaver extends AbstractDatabaseSaver {
                     "playtime", player.getPlaytime(),
                     "rank", player.getRank(),
                     "scoreboardEnabled", player.isScoreboardEnabled() ? 1 : 0,
-                    "claimBlocks", player.getClaimBlocks()
+                    "claimBlocks", player.getClaimBlocks(),
+                    "credits", player.getCredits()
             ));
         }
         return entries;

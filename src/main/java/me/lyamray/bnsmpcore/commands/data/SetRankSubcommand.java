@@ -83,6 +83,7 @@ public record SetRankSubcommand() {
 
         for (var profile : profiles) {
             if (profile.getId() == null) return 0;
+            if (profile.getName() == null) return 0;
 
             updatePlayerRank(profile.getId(), rank);
             sendRankUpdatedMessage(profile.getId(), rank);

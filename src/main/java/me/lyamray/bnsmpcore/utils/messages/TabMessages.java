@@ -11,6 +11,7 @@ import java.util.function.Function;
 public enum TabMessages {
 
     HEADER(aantal -> """
+            
             <gray> • </gray><gradient:#BFE7EA:#A4D0E1:#BFE7EA><b>BeneluxeSMP</b></gradient>
             
             <gradient:#D2E3E6:#D2E3E6>Spelers online: {aantal}</gradient>

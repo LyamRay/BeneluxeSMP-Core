@@ -22,5 +22,6 @@ public class PlayerData {
     private String rank;
     private boolean scoreboardEnabled;
     private long claimBlocks;
+    private int credits;
 
 }

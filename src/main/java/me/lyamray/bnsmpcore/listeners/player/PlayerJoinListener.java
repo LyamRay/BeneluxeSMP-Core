@@ -29,7 +29,7 @@ public class PlayerJoinListener implements Listener {
         Player player = event.getPlayer();
         boolean playerHasPlayed = PlayerDataHandler.getInstance().has(player.getUniqueId());
         UUID uuid = player.getUniqueId();
-        PlayerData playerData = new PlayerData(uuid, player.getName(), 5000, 0, "OVERLEVER", true, 0);
+        PlayerData playerData = new PlayerData(uuid, player.getName(), 5000, 0, "OVERLEVER", true, 0, 0);
         PlayerData data = PlayerDataHandler.getInstance().getData(player.getUniqueId());
 
         if (!playerHasPlayed) {
@@ -47,6 +47,7 @@ public class PlayerJoinListener implements Listener {
         PlayerNameHandler.getInstance().updateNameFor(player, data);
         TabHandler.getInstance().updateTabForPlayer(player, Bukkit.getOnlinePlayers().size());
         ScoreboardHandler.getInstance().updateScoreboardFor(player);
+        updateData(player);
     }
 
     private void welcomeMesssages(Player player, boolean playerHasPlayed) {
@@ -68,5 +69,10 @@ public class PlayerJoinListener implements Listener {
                 MiniMessage.deserializeMessage(PlayerMessages.SUBTITLE.getMessage(player)),
                 Title.Times.times(Duration.ofSeconds(1), Duration.ofSeconds(2), Duration.ofSeconds(1))
         ));
+    }
+    private void updateData(Player player) {
+        PlayerData data = PlayerDataHandler.getInstance().getData(player.getUniqueId());
+        data.setName(player.getName());
+        PlayerDataHandler.getInstance().setData(data);
     }
 }

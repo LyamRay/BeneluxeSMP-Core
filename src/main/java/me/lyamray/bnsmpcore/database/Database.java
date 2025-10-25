@@ -74,7 +74,8 @@ public final class Database {
                             playtime INTEGER DEFAULT 0,
                             rank TEXT DEFAULT 'OVERLEVER',
                             scoreboardEnabled INTEGER DEFAULT 1,
-                            claimBlocks INTEGER DEFAULT 0
+                            claimBlocks INTEGER DEFAULT 0,
+                            credits INTEGER DEFAULT 0
                         );
                         """,
                 "friends", """

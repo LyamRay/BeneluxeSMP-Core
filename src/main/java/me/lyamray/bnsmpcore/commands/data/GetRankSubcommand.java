@@ -79,7 +79,7 @@ public record GetRankSubcommand() {
     private void sendNoPermissionMessage(CommandSourceStack source) {
         source.getSender().sendMessage(MiniMessage.deserializeMessage(
                 GlobalMessages.BENELUXE_TITLE.getMessage() +
-                        "<gray> » <red>Je hebt geen permissie om dit commando uit te voeren.</red>"
+                        "<gray> » <red>Je hebt niet de juiste permissies om dit commando uit te voeren.</red>"
         ));
     }
 

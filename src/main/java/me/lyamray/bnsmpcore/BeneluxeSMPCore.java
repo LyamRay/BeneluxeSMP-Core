@@ -5,9 +5,11 @@ import lombok.Getter;
 import me.lyamray.bnsmpcore.commands.data.DataCommand;
 import me.lyamray.bnsmpcore.database.Database;
 import me.lyamray.bnsmpcore.utils.handlers.RegisterListenerManager;
+import me.lyamray.bnsmpcore.utils.handlers.holograms.RichestPlayersHologramHandler;
 import me.lyamray.bnsmpcore.utils.handlers.passenger.PlayerNameHandler;
 import me.lyamray.bnsmpcore.utils.handlers.scoreboard.ScoreboardHandler;
 import me.lyamray.bnsmpcore.utils.handlers.tab.TabHandler;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class BeneluxeSMPCore extends JavaPlugin {
@@ -28,7 +30,7 @@ public final class BeneluxeSMPCore extends JavaPlugin {
         RegisterListenerManager.registerAll();
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands ->
-                commands.registrar().register(DataCommand.getInstance().create(), "Have a nice party"));
+                commands.registrar().register(DataCommand.getInstance().create(), "Admin data command!"));
 
         startAllTasks();
     }
@@ -44,6 +46,7 @@ public final class BeneluxeSMPCore extends JavaPlugin {
         TabHandler.getInstance().startTabTask(20 * 5L);
         ScoreboardHandler.getInstance().startScoreboardTask(20 * 5L);
         PlayerNameHandler.getInstance().startPassengerCheckTask(20 * 5L);
+        RichestPlayersHologramHandler.getInstance().startUpdateTask(20 * 10L);
     }
 
     private void stopAllTasks() {
@@ -51,5 +54,6 @@ public final class BeneluxeSMPCore extends JavaPlugin {
         ScoreboardHandler.getInstance().stopScoreboardTask();
         PlayerNameHandler.getInstance().stopPassengerCheckTask();
         PlayerNameHandler.getInstance().removeAll();
+        RichestPlayersHologramHandler.getInstance().stopUpdateTask();
     }
 }
