@@ -1,0 +1,35 @@
+package me.lyamray.beneluxesmpcore.database.save;
+
+import lombok.Getter;
+import me.lyamray.beneluxesmpcore.data.player.PlayerData;
+import me.lyamray.beneluxesmpcore.data.player.PlayerDataHandler;
+
+import java.util.*;
+
+public class DatabasePlayerSaver extends AbstractDatabaseSaver {
+    @Getter
+    private static final DatabasePlayerSaver instance = new DatabasePlayerSaver();
+
+    @Override
+    public String getTableName() {
+        return "players";
+    }
+
+    @Override
+    protected Iterable<Map<String, Object>> getAllEntriesToSave() {
+        List<Map<String, Object>> entries = new ArrayList<>();
+        for (PlayerData player : PlayerDataHandler.getInstance().getCacheMap().values()) {
+            entries.add(Map.of(
+                    "uuid", player.getUuid().toString(),
+                    "name", player.getName(),
+                    "money", player.getMoney(),
+                    "playtime", player.getPlaytime(),
+                    "rank", player.getRank(),
+                    "scoreboardEnabled", player.isScoreboardEnabled() ? 1 : 0,
+                    "claimBlocks", player.getClaimBlocks(),
+                    "credits", player.getCredits()
+            ));
+        }
+        return entries;
+    }
+}

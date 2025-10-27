@@ -1,6 +1,6 @@
 name: bnsmpcore
 version: ${version}
-main: me.lyamray.bnsmpcore.BeneluxeSMPCore
+main: me.lyamray.beneluxesmpcore.BeneluxeSMPCore
 api-version: '1.21'
 load: STARTUP
 authors: [ LyamRay ]
