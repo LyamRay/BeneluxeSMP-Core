@@ -81,18 +81,21 @@ tasks.register('bumpVersion') {
 }
 
 tasks.named('jar') {
-    if (System.properties['os.name'].toLowerCase().contains('windows')) {
-        destinationDirectory.set(file("C:/Users/lyamr/Desktop/BeneluxeSMP/plugins"))
-        doFirst {
+    doFirst {
+        def isWindows = System.properties['os.name'].toLowerCase().contains('windows')
+        if (isWindows) {
+            destinationDirectory.set(file("C:/Users/lyamr/Desktop/BeneluxeSMP/plugins"))
+
             def dir = destinationDirectory.get().asFile
             dir.listFiles()?.findAll {
                 it.name.startsWith("${project.name}-") && it.name.endsWith(".jar")
             }?.each { it.delete() }
+
             println "Deleted old JARs in $dir"
+        } else {
+            destinationDirectory.set(layout.buildDirectory.dir("libs"))
+            println "Running on non-Windows (JitPack likely) → using build/libs"
         }
-    } else {
-        // On JitPack/Linux, use the default build/libs directory
-        destinationDirectory.set(layout.buildDirectory.dir("libs"))
     }
 
     archiveFileName.set("${project.name}-${project.version}.jar")
