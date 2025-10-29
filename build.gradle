@@ -2,8 +2,9 @@ plugins {
     id 'java'
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("com.gradleup.shadow") version "9.2.2"
-    id('maven-publish')
+    id 'maven-publish'
 }
+
 
 group = 'me.lyamray'
 
@@ -107,5 +108,43 @@ processResources {
     tasks.named('jar') {
         destinationDirectory = file("C:/Users/lyamr/Desktop/BeneluxeSMP/plugins")
         archiveFileName = "${project.name}-${project.version}.jar"
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            groupId = project.group
+            artifactId = project.name
+            version = project.version
+
+            pom {
+                name = project.name
+                description = "Benelux SMP Core plugin library"
+                url = "https://github.com/lyamray/BeneluxSMPCore"
+
+                licenses {
+                    license {
+                        name = "MIT License"
+                        url = "https://opensource.org/licenses/MIT"
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = "lyamray"
+                        name = "Lyam Ray"
+                    }
+                }
+
+                scm {
+                    connection = "scm:git:git://github.com/lyamray/BeneluxSMPCore.git"
+                    developerConnection = "scm:git:ssh://github.com/lyamray/BeneluxSMPCore.git"
+                    url = "https://github.com/lyamray/BeneluxSMPCore"
+                }
+            }
+        }
     }
 }
