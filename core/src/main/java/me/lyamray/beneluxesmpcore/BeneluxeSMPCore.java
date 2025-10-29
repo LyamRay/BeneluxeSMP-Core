@@ -4,7 +4,7 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.Getter;
 import me.lyamray.beneluxesmpcore.commands.data.DataCommand;
 import me.lyamray.beneluxesmpcore.database.Database;
-import me.lyamray.beneluxesmpcore.handlers.RegisterListenerManager;
+import me.lyamray.beneluxesmpcore.handlers.RegisterListenerHandler;
 import me.lyamray.beneluxesmpcore.handlers.holograms.RichestPlayersHologramHandler;
 import me.lyamray.beneluxesmpcore.handlers.passenger.PlayerNameHandler;
 import me.lyamray.beneluxesmpcore.handlers.scoreboard.ScoreboardHandler;
@@ -26,7 +26,7 @@ public final class BeneluxeSMPCore extends JavaPlugin {
         Database.getInstance().setupDatabase();
         Database.getInstance().loadAllData();
 
-        RegisterListenerManager.registerAll();
+        RegisterListenerHandler.registerAll();
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands ->
                 commands.registrar().register(DataCommand.getInstance().create(), "Admin data commando!"));

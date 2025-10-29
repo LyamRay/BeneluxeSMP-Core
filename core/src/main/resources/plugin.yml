@@ -1,4 +1,4 @@
-name: bnsmpcore
+name: BeneluxeSMPCore
 version: ${version}
 main: me.lyamray.beneluxesmpcore.BeneluxeSMPCore
 api-version: '1.21'

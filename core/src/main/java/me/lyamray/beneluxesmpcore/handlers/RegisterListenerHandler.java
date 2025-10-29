@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @UtilityClass
-public class RegisterListenerManager {
+public class RegisterListenerHandler {
 
     public void registerAll() {
         List<Class<? extends Listener>> listeners = List.of(

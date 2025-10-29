@@ -2,6 +2,7 @@ package me.lyamray.beneluxesmpcore.data.player;
 
 import lombok.Getter;
 import me.lyamray.beneluxesmpcore.data.AbstractDataHandler;
+import org.bukkit.Bukkit;
 
 import java.util.Map;
 import java.util.UUID;
@@ -25,7 +26,8 @@ public class PlayerDataHandler extends AbstractDataHandler<PlayerData, UUID> {
     }
 
     public PlayerData getData(UUID uuid) {
+        String name = Bukkit.getOfflinePlayer(uuid).getName();
         return cache.computeIfAbsent(uuid,
-                id -> new PlayerData(id, "Unknown", 0, 0, "OVERLEVER", true, 0, 0));
+                id -> new PlayerData(id, name, 0, 0, "OVERLEVER", true, 0, 0));
     }
 }
