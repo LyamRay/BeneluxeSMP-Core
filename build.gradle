@@ -114,11 +114,6 @@ processResources {
     filesMatching('plugin.yml') {
         expand propsMap
     }
-
-    tasks.named('jar') {
-        destinationDirectory = file("C:/Users/lyamr/Desktop/BeneluxeSMP/plugins")
-        archiveFileName = "${project.name}-${project.version}.jar"
-    }
 }
 
 publishing {
