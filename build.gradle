@@ -36,8 +36,11 @@ tasks {
 }
 
 def targetJavaVersion = 21
+
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    withSourcesJar()
+    withJavadocJar()
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -105,4 +108,3 @@ processResources {
         archiveFileName = "${project.name}-${project.version}.jar"
     }
 }
-
