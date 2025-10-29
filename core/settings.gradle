@@ -1,2 +1,0 @@
-rootProject.name = 'Beneluxe-SMP-Core'
-include 'core', 'api'
