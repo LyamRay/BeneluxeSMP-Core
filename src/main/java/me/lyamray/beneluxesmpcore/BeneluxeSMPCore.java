@@ -29,7 +29,7 @@ public final class BeneluxeSMPCore extends JavaPlugin {
         RegisterListenerHandler.registerAll();
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands ->
-                commands.registrar().register(DataCommand.getInstance().create(), "Admin data commando!"));
+                commands.registrar().register(DataCommand.getInstance().create(), "Admin Data commando van de BeneluxeSMP Core plugin."));
 
         startAllTasks();
     }
