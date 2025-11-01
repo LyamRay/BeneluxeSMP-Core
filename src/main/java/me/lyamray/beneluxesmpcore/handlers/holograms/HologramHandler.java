@@ -2,6 +2,7 @@ package me.lyamray.beneluxesmpcore.handlers.holograms;
 
 import de.oliver.fancyholograms.api.FancyHologramsPlugin;
 import de.oliver.fancyholograms.api.HologramManager;
+import de.oliver.fancyholograms.api.data.HologramData;
 import de.oliver.fancyholograms.api.data.TextHologramData;
 import de.oliver.fancyholograms.api.data.ItemHologramData;
 import de.oliver.fancyholograms.api.hologram.Hologram;
@@ -9,6 +10,8 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
+import org.joml.Vector3f;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -33,11 +36,13 @@ public class HologramHandler {
         addHologram(name, data);
     }
 
-    public void createItemHologram(String name, Location location, ItemStack item) {
+    public void createItemHologram(String name, Location location, ItemStack item, Vector3f scale) {
         if (isValidForCreation(name)) return;
 
         ItemHologramData data = new ItemHologramData(name, location);
         data.setItemStack(item);
+
+        data.setScale(scale);
 
         addHologram(name, data);
     }
@@ -53,7 +58,7 @@ public class HologramHandler {
     }
 
     private void addHologram(String name, Object data) {
-        Hologram hologram = manager.create((de.oliver.fancyholograms.api.data.HologramData) data);
+        Hologram hologram = manager.create((HologramData) data);
         manager.addHologram(hologram);
         holograms.put(name, hologram);
         log.debug("Created hologram '{}'.", name);
@@ -99,7 +104,7 @@ public class HologramHandler {
         return holograms.get(name);
     }
 
-    private <T extends de.oliver.fancyholograms.api.data.HologramData> Optional<T> getHologramData(String name, Class<T> type) {
+    private <T extends HologramData> Optional<T> getHologramData(String name, Class<T> type) {
         return Optional.ofNullable(holograms.get(name))
                 .map(Hologram::getData)
                 .filter(type::isInstance)

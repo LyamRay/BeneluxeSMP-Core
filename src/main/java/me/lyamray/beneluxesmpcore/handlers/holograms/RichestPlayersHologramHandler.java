@@ -1,5 +1,8 @@
 package me.lyamray.beneluxesmpcore.handlers.holograms;
 
+import de.oliver.fancyholograms.api.FancyHologramsPlugin;
+import de.oliver.fancyholograms.api.data.TextHologramData;
+import de.oliver.fancyholograms.api.hologram.Hologram;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import me.lyamray.beneluxesmpcore.BeneluxeSMPCore;
@@ -10,8 +13,11 @@ import me.lyamray.beneluxesmpcore.utils.numbers.NumberFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Display;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -69,6 +75,7 @@ public class RichestPlayersHologramHandler {
                             .map(PlayerData::getMoney)
                             .map(NumberFormat::formatNumber)
                             .orElse("0");
+
                     return MiniMessage.serializeComponent(MiniMessage.deserializeMessage(
                             String.format(
                                     "<gradient:#B4CBD0:#A4BCC3>%d • %s</gradient><gray> » </gray><gradient:#AFD0DD:#9EC6D4>%s</gradient>",
@@ -76,26 +83,62 @@ public class RichestPlayersHologramHandler {
                             )
                     ));
                 })
-                .collect(Collectors.toList());
+                .toList();
 
-        playerLines.addFirst(MiniMessage.serializeComponent(MiniMessage.deserializeMessage(
+        List<String> lines = new ArrayList<>();
+        lines.add(MiniMessage.serializeComponent(MiniMessage.deserializeMessage(
                 "<gray> • </gray><gradient:#BFE7EA:#A4D0E1:#BFE7EA><b>Top 10 Rijkste Spelers</b>:</gradient><gray>"
         )));
+        lines.addAll(playerLines);
 
-        Location hologramLocation = new Location(world, -1, 100, -7).toCenterLocation();
+        TextHologramData hologramData = getOrCreateHologramData(world);
+        if (hologramData == null) return;
 
-        if (HologramHandler.getInstance().getHologram(HOLOGRAM_NAME) == null) {
-            HologramHandler.getInstance().createTextHologram(HOLOGRAM_NAME, hologramLocation,
-                    playerLines.toArray(new String[0]));
-        } else {
-            HologramHandler.getInstance().updateTextHologram(HOLOGRAM_NAME,
-                    playerLines.toArray(new String[0]));
-            HologramHandler.getInstance().updateHologramLocation(HOLOGRAM_NAME, hologramLocation);
+        hologramData.getText().clear();
+        hologramData.getText().addAll(lines);
+        hologramData.setVisibilityDistance(1000);
+        updateHologram();
+    }
+
+    private TextHologramData getOrCreateHologramData(World world) {
+        if (!FancyHologramsPlugin.isEnabled()) return null;
+
+        FancyHologramsPlugin plugin = FancyHologramsPlugin.get();
+        Hologram hologram = plugin.getHologramManager().getHologram(HOLOGRAM_NAME).orElse(null);
+
+        if (hologram != null && hologram.getData() instanceof TextHologramData existingData) {
+            return existingData;
         }
+
+        Location location = new Location(world, -1, 100, -7).toCenterLocation();
+        TextHologramData newData = new TextHologramData(HOLOGRAM_NAME, location);
+        newData.setBillboard(Display.Billboard.CENTER);
+        newData.setTextAlignment(TextDisplay.TextAlignment.CENTER);
+        newData.setPersistent(true);
+
+        Hologram newHologram = plugin.getHologramManager().create(newData);
+        plugin.getHologramManager().addHologram(newHologram);
+
+        try {
+            plugin.getHologramStorage().save(newHologram);
+        } catch (Exception e) {
+            log.error("Failed to save hologram '{}'", HOLOGRAM_NAME, e);
+        }
+
+        return newData;
+    }
+
+    private void updateHologram() {
+        FancyHologramsPlugin.get().getHologramManager().getHologram(HOLOGRAM_NAME)
+                .ifPresent(h -> {
+                    h.forceUpdate();
+                    h.queueUpdate();
+                });
     }
 
     public void removeHologram() {
-        HologramHandler.getInstance().removeHologram(HOLOGRAM_NAME);
+        FancyHologramsPlugin.get().getHologramManager().getHologram(HOLOGRAM_NAME)
+                .ifPresent(FancyHologramsPlugin.get().getHologramManager()::removeHologram);
     }
 
     private List<PlayerData> getTopPlayersByMoney() {

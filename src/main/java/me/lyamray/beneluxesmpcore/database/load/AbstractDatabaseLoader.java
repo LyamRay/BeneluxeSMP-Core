@@ -12,7 +12,7 @@ public abstract class AbstractDatabaseLoader {
 
     protected abstract void handleRow(Map<String, Object> row) throws SQLException;
 
-    public void load() throws SQLException {
+    public void load() {
         List<Map<String, Object>> results = Database.getInstance().get(getTableName(), null);
         for (Map<String, Object> row : results) {
             try {
