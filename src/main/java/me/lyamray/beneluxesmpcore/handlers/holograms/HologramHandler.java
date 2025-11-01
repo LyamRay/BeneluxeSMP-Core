@@ -111,7 +111,7 @@ public class HologramHandler {
                 .map(type::cast);
     }
 
-    private void forceUpdate(String name) {
+    public void forceUpdate(String name) {
         Optional.ofNullable(holograms.get(name)).ifPresent(Hologram::forceUpdate);
     }
 }
