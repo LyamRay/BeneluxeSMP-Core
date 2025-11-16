@@ -3,10 +3,7 @@ package me.lyamray.beneluxesmpcore.handlers;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import me.lyamray.beneluxesmpcore.BeneluxeSMPCore;
-import me.lyamray.beneluxesmpcore.listeners.player.AsyncPlayerChatListener;
-import me.lyamray.beneluxesmpcore.listeners.player.PlayerJoinListener;
-import me.lyamray.beneluxesmpcore.listeners.player.PlayerLeaveListener;
-import me.lyamray.beneluxesmpcore.listeners.player.PlayerMoveListener;
+import me.lyamray.beneluxesmpcore.listeners.player.*;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
@@ -21,7 +18,8 @@ public class RegisterListenerHandler {
                 PlayerJoinListener.class,
                 PlayerLeaveListener.class,
                 AsyncPlayerChatListener.class,
-                PlayerMoveListener.class
+                PlayerMoveListener.class,
+                PlayerSneakListener.class
         );
 
         for (Class<? extends Listener> clazz : listeners) {

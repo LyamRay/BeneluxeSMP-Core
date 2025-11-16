@@ -39,11 +39,11 @@ public class PlayerJoinListener implements Listener {
             location.setPitch(0);
             player.getPassengers().clear();
             player.teleportAsync(location);
-            PlayerNameHandler.getInstance().updateNameFor(player, data);
+            PlayerNameHandler.getInstance().updateNameFor(player);
         }
 
         welcomeMesssages(player, playerHasPlayed);
-        PlayerNameHandler.getInstance().updateNameFor(player, data);
+        PlayerNameHandler.getInstance().updateNameFor(player);
         TabHandler.getInstance().updateTabForPlayer(player, Bukkit.getOnlinePlayers().size());
         ScoreboardHandler.getInstance().updateScoreboardFor(player);
         updateData(player);

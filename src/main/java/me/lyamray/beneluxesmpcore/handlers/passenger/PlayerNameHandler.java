@@ -1,6 +1,7 @@
 package me.lyamray.beneluxesmpcore.handlers.passenger;
 
 import lombok.Getter;
+import lombok.Setter;
 import me.lyamray.beneluxesmpcore.BeneluxeSMPCore;
 import me.lyamray.beneluxesmpcore.data.player.PlayerData;
 import me.lyamray.beneluxesmpcore.data.player.PlayerDataHandler;
@@ -21,13 +22,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@Getter
+@Setter
 public class PlayerNameHandler {
 
     @Getter
     private static final PlayerNameHandler instance = new PlayerNameHandler();
 
-    private final Map<Player, Entity> intermediateEntities = new HashMap<>();
-    private final Map<Player, Pair<TextDisplay, String>> nameDisplays = new HashMap<>();
+    private Map<Player, Entity> intermediateEntities = new HashMap<>();
+    private Map<Player, Pair<TextDisplay, String>> nameDisplays = new HashMap<>();
 
     private BukkitTask passengerTask;
 
@@ -68,29 +71,43 @@ public class PlayerNameHandler {
                 || interaction.isDead()
                 || !player.getPassengers().contains(interaction)
                 || !expectedText.equals(pair.getRight())) {
-            updateNameFor(player, data);
+            updateNameFor(player);
         }
     }
 
+    public void updateNameFor(Player player) {
+        PlayerData data = PlayerDataHandler.getInstance().getData(player.getUniqueId());
+        if (data == null) return;
 
-    public void updateAll() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            PlayerData data = PlayerDataHandler.getInstance().getData(player.getUniqueId());
-            if (data != null) {
-                updateNameFor(player, data);
-            }
-        }
-    }
-
-    public void updateNameFor(Player player, PlayerData data) {
-        Ranks rank = parseRank(data.getRank());
-        if (rank == null) rank = Ranks.OVERLEVER;
-
+        Ranks rank = getRankOrDefault(data);
         String displayName = TabMessages.PLAYER_ENTRY.getPlayerMessage(rank, player);
         Component nameComponent = MiniMessage.deserializeMessage(displayName);
 
-        remove(player);
+        if (reuseExistingEntities(player, displayName, nameComponent)) return;
 
+        remove(player);
+        spawnInteractionWithText(player, nameComponent, displayName);
+    }
+
+    private Ranks getRankOrDefault(PlayerData data) {
+        Ranks rank = parseRank(data.getRank());
+        return rank != null ? rank : Ranks.OVERLEVER;
+    }
+
+    private boolean reuseExistingEntities(Player player, String displayName, Component nameComponent) {
+        Pair<TextDisplay, String> pair = nameDisplays.get(player);
+        Entity interaction = intermediateEntities.get(player);
+
+        if (pair != null && pair.getLeft() != null && !pair.getLeft().isDead()
+                && interaction != null && !interaction.isDead()
+                && displayName.equals(pair.getRight())) {
+            pair.getLeft().text(nameComponent);
+            return true;
+        }
+        return false;
+    }
+
+    private void spawnInteractionWithText(Player player, Component nameComponent, String displayName) {
         Location spawnLocation = player.getLocation().toCenterLocation();
 
         spawnLocation.getWorld().spawn(spawnLocation, Interaction.class, interaction -> {
@@ -104,7 +121,11 @@ public class PlayerNameHandler {
 
             player.addPassenger(interaction);
         });
+
+        TextDisplay entity = nameDisplays.get(player).getLeft();
+        player.hideEntity(BeneluxeSMPCore.getInstance(), entity);
     }
+
 
     private void setupInteraction(Interaction interaction) {
         interaction.setInteractionHeight(0.25F);
@@ -145,7 +166,6 @@ public class PlayerNameHandler {
         );
         intermediateEntities.clear();
     }
-
 
     public void remove(Player player) {
         Optional.ofNullable(nameDisplays.remove(player))

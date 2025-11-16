@@ -1,4 +1,4 @@
-name: BeneluxeSMPCore
+name: BeneluxeSMP-Core
 version: ${version}
 main: me.lyamray.beneluxesmpcore.BeneluxeSMPCore
 api-version: '1.21'
@@ -7,6 +7,3 @@ authors: [ LyamRay ]
 description: The core plugin from the Beneluxe-SMP.
 website: https://github.com/LyamRay
 depend: [FancyNpcs]
-commands:
-  data:
-

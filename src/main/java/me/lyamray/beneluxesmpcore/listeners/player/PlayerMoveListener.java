@@ -44,7 +44,7 @@ public class PlayerMoveListener implements Listener {
 
             player.teleport(location);
             PlayerData playerData = PlayerDataHandler.getInstance().getData(player.getUniqueId());
-            PlayerNameHandler.getInstance().updateNameFor(player, playerData);
+            PlayerNameHandler.getInstance().updateNameFor(player);
 
         }
     }

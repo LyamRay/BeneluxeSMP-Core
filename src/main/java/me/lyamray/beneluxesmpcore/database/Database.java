@@ -53,6 +53,7 @@ public final class Database {
             Files.createDirectories(dbPath.getParent());
             this.connection = new Database(dbPath.toString()).connection;
             log.info("Connected successfully to the database!");
+            scheduleAutoSave();
         } catch (IOException | SQLException e) {
             fatalError(e, plugin);
         }
@@ -213,6 +214,20 @@ public final class Database {
                 log.warn(String.valueOf(e));
             }
         }
+    }
+    public void scheduleAutoSave() {
+        long intervalTicks = 30L * 60L * 20L;
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously(BeneluxeSMPCore.getInstance(), () -> {
+            synchronized (this) {
+                try {
+                    saveAllData();
+                    log.info("Auto-saved all database data successfully.");
+                } catch (Exception e) {
+                    log.error("Failed to auto-save database: {}", e.getMessage(), e);
+                }
+            }
+        }, intervalTicks, intervalTicks);
     }
 
     public void saveAllData() {

@@ -33,7 +33,7 @@ public class DataCommand {
     }
 
     public LiteralCommandNode<CommandSourceStack> create() {
-        var root = Commands.literal("data");
+        var root = Commands.literal("bdata");
 
         subcommands.forEach(builder -> root.then(builder.get()));
 

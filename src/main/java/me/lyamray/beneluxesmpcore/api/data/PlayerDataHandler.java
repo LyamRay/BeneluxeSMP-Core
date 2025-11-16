@@ -1,16 +1,15 @@
 package me.lyamray.beneluxesmpcore.api.data;
 
 import me.lyamray.beneluxesmpcore.data.player.PlayerData;
-import me.lyamray.beneluxesmpcore.data.player.PlayerDataHandler;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-public class PlayerDataHandlerAPI {
+public class PlayerDataHandler {
 
-    private static final PlayerDataHandler handler = PlayerDataHandler.getInstance();
+    private static final me.lyamray.beneluxesmpcore.data.player.PlayerDataHandler handler = me.lyamray.beneluxesmpcore.data.player.PlayerDataHandler.getInstance();
 
     /**
      * Get all cached player data.
