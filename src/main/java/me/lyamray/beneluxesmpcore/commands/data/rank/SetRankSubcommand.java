@@ -1,4 +1,4 @@
-package me.lyamray.beneluxesmpcore.commands.data;
+package me.lyamray.beneluxesmpcore.commands.data.rank;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.mojang.brigadier.arguments.StringArgumentType;

@@ -5,6 +5,14 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import lombok.Getter;
+import me.lyamray.beneluxesmpcore.commands.data.claimblocks.GetClaimBlocksSubcommand;
+import me.lyamray.beneluxesmpcore.commands.data.claimblocks.SetClaimBlocksSubcommand;
+import me.lyamray.beneluxesmpcore.commands.data.credits.GetCreditsSubcommand;
+import me.lyamray.beneluxesmpcore.commands.data.credits.SetCreditsSubcommand;
+import me.lyamray.beneluxesmpcore.commands.data.money.GetMoneySubcommand;
+import me.lyamray.beneluxesmpcore.commands.data.money.SetMoneySubcommand;
+import me.lyamray.beneluxesmpcore.commands.data.rank.GetRankSubcommand;
+import me.lyamray.beneluxesmpcore.commands.data.rank.SetRankSubcommand;
 
 import java.util.ArrayList;
 import java.util.List;

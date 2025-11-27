@@ -1,6 +1,7 @@
-package me.lyamray.beneluxesmpcore.commands.data;
+package me.lyamray.beneluxesmpcore.commands.data.credits;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -13,7 +14,6 @@ import me.lyamray.beneluxesmpcore.data.player.PlayerData;
 import me.lyamray.beneluxesmpcore.data.player.PlayerDataHandler;
 import me.lyamray.beneluxesmpcore.utils.messages.GlobalMessages;
 import me.lyamray.beneluxesmpcore.utils.messages.MiniMessage;
-import me.lyamray.beneluxesmpcore.utils.numbers.NumberFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
@@ -22,14 +22,14 @@ import java.util.Set;
 import java.util.UUID;
 
 @NullMarked
-public record GetMoneySubcommand() {
+public record SetCreditsSubcommand() {
 
-    private static final Set<String> ALLOWED_RANKS = Set.of("ADMIN", "MODERATOR");
+    private static final Set<String> ALLOWED_RANKS = Set.of("ADMIN");
 
     public LiteralArgumentBuilder<CommandSourceStack> create() {
-        return Commands.literal("getmoney")
+        return Commands.literal("setcredits")
                 .then(playerProfilesArgument()
-                        .executes(this::executeGetMoney));
+                        .then(creditsArgument()));
     }
 
     private RequiredArgumentBuilder<CommandSourceStack, PlayerProfileListResolver> playerProfilesArgument() {
@@ -43,7 +43,12 @@ public record GetMoneySubcommand() {
                 });
     }
 
-    private int executeGetMoney(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+    private RequiredArgumentBuilder<CommandSourceStack, Integer> creditsArgument() {
+        return Commands.argument("amount", IntegerArgumentType.integer(0))
+                .executes(this::executeSetCredits);
+    }
+
+    private int executeSetCredits(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         CommandSourceStack source = ctx.getSource();
 
         if (!hasRequiredRank(source)) {
@@ -59,25 +64,45 @@ public record GetMoneySubcommand() {
             return 0;
         }
 
+        int credits = ctx.getArgument("amount", Integer.class);
+
         for (PlayerProfile profile : profiles) {
             if (profile.getId() == null) continue;
             if (profile.getName() == null) continue;
 
             UUID uuid = profile.getId();
-            PlayerData data = PlayerDataHandler.getInstance().getData(uuid);
-
-            long balance = data.getMoney();
-            sendExecutorFeedback(source, profile.getName(), balance);
+            updatePlayerCredits(uuid, credits);
+            sendCreditsUpdatedMessage(uuid, credits);
+            sendExecutorFeedback(source, profile.getName(), credits);
         }
 
         return 1;
     }
 
-    private void sendExecutorFeedback(CommandSourceStack source, String name, long amount) {
+    private void updatePlayerCredits(UUID uuid, int credits) {
+        PlayerData data = PlayerDataHandler.getInstance().getData(uuid);
+        data.setCredits(credits);
+        PlayerDataHandler.getInstance().setData(data);
+    }
+
+    private void sendCreditsUpdatedMessage(UUID uuid, int credits) {
+        Player onlinePlayer = Bukkit.getPlayer(uuid);
+        if (onlinePlayer == null) return;
+
         String message = (GlobalMessages.BENELUXE_TITLE.getMessage() +
-                "<gray> » <gradient:#C6E5F1:#C4D0CD>Het saldo van {playername} is momenteel {amount} coins.</gradient>")
+                "<gray> » <gradient:#D2E3E6:#D2E3E6>Hey, {playername}! </gradient>" +
+                "<gradient:#C6E5F1:#C4D0CD>Je credits zijn ingesteld op {credits}.</gradient>")
+                .replace("{playername}", onlinePlayer.getName())
+                .replace("{credits}", String.valueOf(credits));
+
+        onlinePlayer.sendMessage(MiniMessage.deserializeMessage(message));
+    }
+
+    private void sendExecutorFeedback(CommandSourceStack source, String name, int credits) {
+        String message = (GlobalMessages.BENELUXE_TITLE.getMessage() +
+                "<gray> » <gradient:#C6E5F1:#C4D0CD>Je hebt succesvol de credits van {playername} aangepast naar {credits}.</gradient>")
                 .replace("{playername}", name)
-                .replace("{amount}", String.valueOf(NumberFormat.formatNumber(amount)));
+                .replace("{credits}", String.valueOf(credits));
 
         source.getSender().sendMessage(MiniMessage.deserializeMessage(message));
     }

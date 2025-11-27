@@ -1,7 +1,7 @@
-package me.lyamray.beneluxesmpcore.commands.data;
+package me.lyamray.beneluxesmpcore.commands.data.claimblocks;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.LongArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -22,14 +22,14 @@ import java.util.Set;
 import java.util.UUID;
 
 @NullMarked
-public record SetCreditsSubcommand() {
+public record SetClaimBlocksSubcommand() {
 
     private static final Set<String> ALLOWED_RANKS = Set.of("ADMIN");
 
     public LiteralArgumentBuilder<CommandSourceStack> create() {
-        return Commands.literal("setcredits")
+        return Commands.literal("setclaimblocks")
                 .then(playerProfilesArgument()
-                        .then(creditsArgument()));
+                        .then(amountArgument()));
     }
 
     private RequiredArgumentBuilder<CommandSourceStack, PlayerProfileListResolver> playerProfilesArgument() {
@@ -43,12 +43,12 @@ public record SetCreditsSubcommand() {
                 });
     }
 
-    private RequiredArgumentBuilder<CommandSourceStack, Integer> creditsArgument() {
-        return Commands.argument("amount", IntegerArgumentType.integer(0))
-                .executes(this::executeSetCredits);
+    private RequiredArgumentBuilder<CommandSourceStack, Long> amountArgument() {
+        return Commands.argument("amount", LongArgumentType.longArg(0))
+                .executes(this::executeSetClaimBlocks);
     }
 
-    private int executeSetCredits(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+    private int executeSetClaimBlocks(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         CommandSourceStack source = ctx.getSource();
 
         if (!hasRequiredRank(source)) {
@@ -64,45 +64,44 @@ public record SetCreditsSubcommand() {
             return 0;
         }
 
-        int credits = ctx.getArgument("amount", Integer.class);
+        long amount = ctx.getArgument("amount", Long.class);
 
         for (PlayerProfile profile : profiles) {
-            if (profile.getId() == null) continue;
-            if (profile.getName() == null) continue;
+            if (profile.getId() == null || profile.getName() == null) continue;
 
             UUID uuid = profile.getId();
-            updatePlayerCredits(uuid, credits);
-            sendCreditsUpdatedMessage(uuid, credits);
-            sendExecutorFeedback(source, profile.getName(), credits);
+            updatePlayerClaimBlocks(uuid, amount);
+            sendClaimBlocksUpdatedMessage(uuid, amount);
+            sendExecutorFeedback(source, profile.getName(), amount);
         }
 
         return 1;
     }
 
-    private void updatePlayerCredits(UUID uuid, int credits) {
+    private void updatePlayerClaimBlocks(UUID uuid, long amount) {
         PlayerData data = PlayerDataHandler.getInstance().getData(uuid);
-        data.setCredits(credits);
+        data.setClaimBlocks(amount);
         PlayerDataHandler.getInstance().setData(data);
     }
 
-    private void sendCreditsUpdatedMessage(UUID uuid, int credits) {
+    private void sendClaimBlocksUpdatedMessage(UUID uuid, long amount) {
         Player onlinePlayer = Bukkit.getPlayer(uuid);
         if (onlinePlayer == null) return;
 
         String message = (GlobalMessages.BENELUXE_TITLE.getMessage() +
                 "<gray> » <gradient:#D2E3E6:#D2E3E6>Hey, {playername}! </gradient>" +
-                "<gradient:#C6E5F1:#C4D0CD>Je credits zijn ingesteld op {credits}.</gradient>")
+                "<gradient:#C6E5F1:#C4D0CD>Je claimblocks zijn ingesteld op {amount}.</gradient>")
                 .replace("{playername}", onlinePlayer.getName())
-                .replace("{credits}", String.valueOf(credits));
+                .replace("{amount}", String.valueOf(amount));
 
         onlinePlayer.sendMessage(MiniMessage.deserializeMessage(message));
     }
 
-    private void sendExecutorFeedback(CommandSourceStack source, String name, int credits) {
+    private void sendExecutorFeedback(CommandSourceStack source, String name , long amount) {
         String message = (GlobalMessages.BENELUXE_TITLE.getMessage() +
-                "<gray> » <gradient:#C6E5F1:#C4D0CD>Je hebt succesvol de credits van {playername} aangepast naar {credits}.</gradient>")
+                "<gray> » <gradient:#C6E5F1:#C4D0CD>Je hebt succesvol de claimblocks van {playername} aangepast naar {amount}.</gradient>")
                 .replace("{playername}", name)
-                .replace("{credits}", String.valueOf(credits));
+                .replace("{amount}", String.valueOf(amount));
 
         source.getSender().sendMessage(MiniMessage.deserializeMessage(message));
     }

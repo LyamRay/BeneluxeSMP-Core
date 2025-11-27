@@ -1,4 +1,4 @@
-package me.lyamray.beneluxesmpcore.commands.data;
+package me.lyamray.beneluxesmpcore.commands.data.credits;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -13,6 +13,7 @@ import me.lyamray.beneluxesmpcore.data.player.PlayerData;
 import me.lyamray.beneluxesmpcore.data.player.PlayerDataHandler;
 import me.lyamray.beneluxesmpcore.utils.messages.GlobalMessages;
 import me.lyamray.beneluxesmpcore.utils.messages.MiniMessage;
+import me.lyamray.beneluxesmpcore.utils.numbers.NumberFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
@@ -21,14 +22,14 @@ import java.util.Set;
 import java.util.UUID;
 
 @NullMarked
-public record GetClaimBlocksSubcommand() {
+public record GetCreditsSubcommand() {
 
     private static final Set<String> ALLOWED_RANKS = Set.of("ADMIN", "MODERATOR");
 
     public LiteralArgumentBuilder<CommandSourceStack> create() {
-        return Commands.literal("getclaimblocks")
+        return Commands.literal("getcredits")
                 .then(playerProfilesArgument()
-                        .executes(this::executeGetClaimBlocks));
+                        .executes(this::executeGetCredits));
     }
 
     private RequiredArgumentBuilder<CommandSourceStack, PlayerProfileListResolver> playerProfilesArgument() {
@@ -42,7 +43,7 @@ public record GetClaimBlocksSubcommand() {
                 });
     }
 
-    private int executeGetClaimBlocks(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+    private int executeGetCredits(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         CommandSourceStack source = ctx.getSource();
 
         if (!hasRequiredRank(source)) {
@@ -59,23 +60,24 @@ public record GetClaimBlocksSubcommand() {
         }
 
         for (PlayerProfile profile : profiles) {
-            if (profile.getId() == null || profile.getName() == null) continue;
+            if (profile.getId() == null) continue;
+            if (profile.getName() == null) continue;
 
             UUID uuid = profile.getId();
             PlayerData data = PlayerDataHandler.getInstance().getData(uuid);
 
-            long claimBlocks = data.getClaimBlocks();
-            sendExecutorFeedback(source, profile.getName(), claimBlocks);
+            int credits = data.getCredits();
+            sendExecutorFeedback(source, profile.getName(), credits);
         }
 
         return 1;
     }
 
-    private void sendExecutorFeedback(CommandSourceStack source, String name, long amount) {
+    private void sendExecutorFeedback(CommandSourceStack source, String name, int credits) {
         String message = (GlobalMessages.BENELUXE_TITLE.getMessage() +
-                "<gray> » <gradient:#C6E5F1:#C4D0CD>Het aantal claimblocks van {playername} is momenteel {amount}.</gradient>")
+                "<gray> » <gradient:#C6E5F1:#C4D0CD>{playername} heeft momenteel {credits} credits.</gradient>")
                 .replace("{playername}", name)
-                .replace("{amount}", String.valueOf(amount));
+                .replace("{credits}", String.valueOf(NumberFormat.formatNumber(credits)));
 
         source.getSender().sendMessage(MiniMessage.deserializeMessage(message));
     }
