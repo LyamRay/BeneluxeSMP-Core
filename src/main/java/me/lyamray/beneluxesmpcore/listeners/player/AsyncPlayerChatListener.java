@@ -56,7 +56,13 @@ public class AsyncPlayerChatListener implements Listener {
             String part2 = rawMessage.substring(mid);
 
             if (rankMessage != null) {
-                return MiniMessage.deserializeMessage(rankMessage.getMessage(rank, player, part1, part2));
+
+                String text = rankMessage.getMessage(rank, player, part1, part2);
+
+                String withHead = "<head:" + player.getUniqueId() + "> " + text;
+
+                return MiniMessage.deserializeMessage(withHead);
+
             } else {
                 kickPlayer(player);
                 return Component.empty();
