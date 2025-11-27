@@ -27,13 +27,16 @@ public enum ScoreboardMessages {
                         "<gradient:#B4CBD0:#A4BCC3>Rank</gradient><gray> » </gray>" + rank
                 ),
                 MiniMessage.deserializeMessage(
-                        "<gradient:#B4CBD0:#A4BCC3>Claimblocks</gradient><gray> » </gray><gradient:#AFD0DD:#9EC6D4>" + claimBlocks + "</gradient>"
+                        "<gradient:#B4CBD0:#A4BCC3>Claimblocks</gradient><gray> » </gray><gradient:#AFD0DD:#9EC6D4>"
+                                + NumberFormat.formatNumber(claimBlocks) + "</gradient>"
                 ),
                 MiniMessage.deserializeMessage(
-                        "<gradient:#B4CBD0:#A4BCC3>Credits</gradient><gray> » </gray><gradient:#AFD0DD:#9EC6D4>" + credits + "</gradient>"
+                        "<gradient:#B4CBD0:#A4BCC3>Credits</gradient><gray> » </gray><gradient:#AFD0DD:#9EC6D4>"
+                                + NumberFormat.formatNumber(credits) + "</gradient>"
                 ),
                 MiniMessage.deserializeMessage(
-                        "<gradient:#B4CBD0:#A4BCC3>Saldo</gradient><gray> » </gray><gradient:#AFD0DD:#9EC6D4>€" + NumberFormat.formatNumber(money) + "</gradient>"
+                        "<gradient:#B4CBD0:#A4BCC3>Saldo</gradient><gray> » </gray><gradient:#AFD0DD:#9EC6D4>€"
+                                + NumberFormat.formatNumber(money) + "</gradient>"
                 ),
                 MiniMessage.deserializeMessage(" "),
                 MiniMessage.deserializeMessage("<gradient:#D2E3E6:#D2E3E6>play.</gradient><gradient:#C6E5F1:#C4D0CD>beneluxesmp.be</gradient>")

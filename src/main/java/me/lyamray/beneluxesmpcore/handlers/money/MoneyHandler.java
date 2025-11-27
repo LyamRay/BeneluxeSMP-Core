@@ -59,7 +59,8 @@ public class MoneyHandler {
         data.setMoney(amount);
         Player player = Bukkit.getOfflinePlayer(uuid).getPlayer();
         if (player == null) return;
-        notifyPlayer(player, amount, false);
+
+        notifyPlayer(player, amount, amount >= getBalance(uuid));
     }
 
     public void setBalance(Player player, long amount) {
@@ -69,6 +70,7 @@ public class MoneyHandler {
     public void resetBalance(UUID uuid) {
         setBalance(uuid, 0);
     }
+
     public void resetBalance(Player player) {
         resetBalance(player.getUniqueId());
     }
